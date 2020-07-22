@@ -1,0 +1,13 @@
+useDynLib(multiscale, .registration=TRUE)
+export(compute_minimal_intervals,
+       compute_quantiles,
+       compute_statistics,
+       construct_grid,
+       construct_weekly_grid,
+       estimate_lrv,
+       multiscale_test,
+       plot_sizer_map,
+       select_order)
+importFrom(Rcpp, evalCpp)
+importFrom('graphics', 'image')
+importFrom('stats', 'quantile')
