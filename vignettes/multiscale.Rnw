@@ -36,19 +36,20 @@ the following list:
   \item \verb|estimate_lrv|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}. 
 }
 
-To the best of our knowledge, our \textbf{multiscale} package is the first software
-package that offers the estimation methods of \cite{KhismatullinaVogt2019} and \cite{KhismatullinaVogt2020}.
+%To the best of our knowledge, our \textbf{multiscale} package is the first software
+%package that offers the estimation methods of \cite{KhismatullinaVogt2020a} and \cite{KhismatullinaVogt2020b}.
 
-To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2019}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2020}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
+To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2020a}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2020b}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
 
 The temperature dataset can be obtained from the \textbf{multiscale} package using the function data(temperature,
 package = "multiscale"). The COVID-19 dataset can be obtained from the \textbf{multiscale} package using the function data(covid, package = "multiscale").
 
-This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in \cite{KhismatullinaVogt2019} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). Section \ref{sec:concl} concludes.
+This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020a} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020b} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). Section \ref{sec:concl} concludes.
 
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
+In development.
 % For our analysis, we use the dataset of yearly mean temperatures which consists of $T=359$ observations $Y_{t,T}$ covering the years from $1659$ to $2017$. A plot of the time series is given in panel (a) of Figure \ref{fig:app:UK}. We assume that the temperature data $Y_{t,T}$ follow the nonparametric trend model $Y_{t,T} = m(t/T) + \varepsilon_t$, where $m$ is the unknown time trend of interest. The error process $\{ \varepsilon_t \}$ is supposed to have the AR($p^*$) structure $\varepsilon_t = \sum_{j=1}^{p^*} a_j \varepsilon_{t-j} + \eta_t$, where $\eta_t$ are i.i.d.\ innovations with mean $0$ and variance $\nu^2$. As pointed out in \cite{Mudelsee2010} among others, this is the most widely used error model for discrete climate time series. We select the AR order $p^*$ by the Bayesian information criterion (BIC), which yields $p^*=2$.\footnote{More precisely, we proceed as follows: We estimate the AR parameters and the corresponding variance of the innovation terms for different AR orders by the methods from Section \ref{sec-error-var} and then choose $p^*$ as the minimizer of the Bayesian information criterion (BIC). As a robustness check, we have repeated this procedure for a wide range of the tuning parameters $q$ and $(\underline{r},\overline{r})$, which produces the value $p^*=2$ throughout. Moreover, we have considered other information criteria such as FPE, AIC and AICC, which gives the AR order $p^*=2$ for almost all values of $q$ and $(\underline{r},\overline{r})$.} We then estimate the AR($2$) parameters $\boldsymbol{a} = (a_1,a_2)$ and the long-run error variance $\sigma^2$ by the procedures from Section \ref{sec-error-var} with $q = 25$ and $(\underline{r},\overline{r}) = (1,10)$. This gives the estimators $\widehat{a}_1 = 0.164$, $\widehat{a}_2 = 0.175$ and $\widehat{\sigma}^2 = 0.737$.
 % %Order = 2, LRV = 0.737387, a1 = 0.164, a2 = 0.175, sigma_eta^2 = 0.3227605
 % 
@@ -72,7 +73,7 @@ This vignette is organized as follows. Section \ref{sec:single} presents our mut
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 
-As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2020}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
+As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2020b}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
 
 <<>>=
 require(multiscale)
@@ -126,7 +127,7 @@ In order to be able to implement the test, we first estimate the overdispersion 
 \begin{align*}
 \hat{\sigma}_i^2 = \frac{\sum_{t=2}^T (X_{it}-X_{it-1})^2}{2 \sum_{t=1}^T X_{it}}
 \end{align*}
-and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2020}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions. 
+and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2020b}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions. 
 
 
 <<>>=
@@ -246,7 +247,7 @@ results <- multiscale_test(data = covid, sigma = sigmahat,
 str(results)
 @
 
-Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2020}.
+Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2020b}.
 
 First, we plot the the observed time series for the two countries.
 
@@ -287,7 +288,7 @@ title(main = "(b) smoothed curves from (a)", font.main = 1, line = 0.5)
 lines(smoothed_2, col="red")
 @
 
-Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
+Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020b}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
 
 According to theoretical results in this paper, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that there is a difference between the functions $\lambda_1$ and $\lambda_2$ on each of these intervals.
 
@@ -318,6 +319,11 @@ segments(reject_set$startpoint, reject_set$values,
 
 
 \section{Long-run variance estimator}\label{sec:lrv}
+In development.
+
+\section{Conclusion}\label{sec:concl}
+In development.
+
 \bibliography{bibliography.bib}
 \bibliographystyle{ims}
 \end{document}

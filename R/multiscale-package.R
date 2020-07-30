@@ -37,11 +37,8 @@
 #' @aliases multiscale
 #' @seealso
 #'    \url{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12347}
-#' @references Khismatullina M., Vogt M. Multiscale inference and long-run
-#'             variance estimation in non-parametric regression with
-#'             time series errors //Journal of the Royal Statistical Society:
-#'             Series B (Statistical Methodology). - 2019.
+#' @references 
+#' \insertRef{KhismatullinaVogt2020a}{multiscale}
 #'             
-#'             Khismatullina M., Vogt M. Simultaneous statistical inference
-#'             for epidemic trends //???. - 2020.
+#' \insertRef{KhismatullinaVogt2020b}{multiscale}            
 NULL

@@ -14,7 +14,8 @@ Description: This package performs a multiscale analysis of a nonparametric
   Khismatullina and Vogt (2019) and Khismatullina and Vogt (2020)
   for more information and theory.
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.4)
+Imports: Rcpp (>= 1.0.4), Rdpack
+RdMacros: Rdpack
 LinkingTo: Rcpp
 RoxygenNote: 7.1.0
 Encoding: UTF-8
