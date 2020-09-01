@@ -2,8 +2,8 @@
 #'
 #'
 #' @description This package performs a multiscale analysis of a single nonparametric 
-#'   time trends (Khismatullina and Vogt (2019)) or multiple nonparametric 
-#'   time trends (Khismatullina and Vogt (2020)).
+#'   time trends (Khismatullina and Vogt (2020a)) or multiple nonparametric 
+#'   time trends (Khismatullina and Vogt (2020b)).
 #'
 #'   In case of a single nonparametric regression, the multiscale method to
 #'   test qualitative hypotheses about the nonparametric time trend \eqn{m}
@@ -17,7 +17,7 @@
 #'   Hence, the package also provides the difference-based
 #'   estimator for the case that the errors belong to the class of
 #'   \eqn{AR(\infty)} processes. The estimator was also proposed in
-#'   Khismatullina and Vogt (2019).
+#'   Khismatullina and Vogt (2020a).
 #'
 #'   In case of multiple nonparametric regressions, we provide
 #'   the multiscale method to test qualitative hypotheses about
@@ -29,7 +29,7 @@
 #'   intenisty parameters are different or not, and if they are, it detects
 #'   with a prespicified significance level the regions where these differences
 #'   most probably occur. The method was introduced in
-#'   Khismatullina and Vogt (2020) and can be used for comparing the rates of
+#'   Khismatullina and Vogt (2020b) and can be used for comparing the rates of
 #'   infection of COVID-19 across countries.
 #'
 #' @docType package
