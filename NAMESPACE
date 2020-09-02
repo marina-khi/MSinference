@@ -11,3 +11,4 @@ export(compute_minimal_intervals,
 importFrom(Rcpp, evalCpp)
 importFrom('graphics', 'image')
 importFrom('stats', 'quantile')
+importFrom(Rdpack, reprompt)

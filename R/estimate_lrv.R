@@ -59,7 +59,7 @@ corrections <- function(coefs, var_eta, len) {
 }
 
 #' Computes estimator of the AR(p) coefficients by the procedure from
-#' Khismatullina and Vogt (2019).
+#' Khismatullina and Vogt (2020a).
 #'
 #' @keywords internal
 #' @param data      Time series.
@@ -119,7 +119,7 @@ ar_coef <- function(data, l1, l2, correct, p) {
 #'                  
 #'                  The exact estimation procedure as well as description of 
 #'                  the tuning parameters needed for this estimation can be found
-#'                  in Khismatullina and Vogt (2019).
+#'                  in Khismatullina and Vogt (2020).
 #'                  
 #' @param data      A vector of \eqn{Y(1), Y(2), \ldots, Y(T)}.
 #' @param q,r_bar   Tuning parameters.
@@ -134,7 +134,7 @@ ar_coef <- function(data, l1, l2, correct, p) {
 #' @references Khismatullina M., Vogt M. Multiscale inference and long-run
 #'             variance estimation in non-parametric regression with
 #'             time series errors //Journal of the Royal Statistical Society:
-#'             Series B (Statistical Methodology). - 2019.
+#'             Series B (Statistical Methodology). - 2020.
 #'
 #' @export
 estimate_lrv <- function(data, q, r_bar, p) {
