@@ -44,10 +44,10 @@ To demonstrate the use of our functions, we analyse two datasets. In order to il
 The temperature dataset can be obtained from the \textbf{multiscale} package using the function data(temperature,
 package = "multiscale"). The COVID-19 dataset can be obtained from the \textbf{multiscale} package using the function data(covid, package = "multiscale").
 
-This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in \cite{KhismatullinaVogt2019} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). Section \ref{sec:concl} concludes.
+This vignette is organized as follows. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020} and displays the results of analysing the COVID-19 data with the help of our test. In the future, we are planning to add two Sections that will present our mutliscale test for analysing a single time trend as in \cite{KhismatullinaVogt2019} and the results of applying it to the temperature data and introduce the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
 
 
-\section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
+%\section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
 % For our analysis, we use the dataset of yearly mean temperatures which consists of $T=359$ observations $Y_{t,T}$ covering the years from $1659$ to $2017$. A plot of the time series is given in panel (a) of Figure \ref{fig:app:UK}. We assume that the temperature data $Y_{t,T}$ follow the nonparametric trend model $Y_{t,T} = m(t/T) + \varepsilon_t$, where $m$ is the unknown time trend of interest. The error process $\{ \varepsilon_t \}$ is supposed to have the AR($p^*$) structure $\varepsilon_t = \sum_{j=1}^{p^*} a_j \varepsilon_{t-j} + \eta_t$, where $\eta_t$ are i.i.d.\ innovations with mean $0$ and variance $\nu^2$. As pointed out in \cite{Mudelsee2010} among others, this is the most widely used error model for discrete climate time series. We select the AR order $p^*$ by the Bayesian information criterion (BIC), which yields $p^*=2$.\footnote{More precisely, we proceed as follows: We estimate the AR parameters and the corresponding variance of the innovation terms for different AR orders by the methods from Section \ref{sec-error-var} and then choose $p^*$ as the minimizer of the Bayesian information criterion (BIC). As a robustness check, we have repeated this procedure for a wide range of the tuning parameters $q$ and $(\underline{r},\overline{r})$, which produces the value $p^*=2$ throughout. Moreover, we have considered other information criteria such as FPE, AIC and AICC, which gives the AR order $p^*=2$ for almost all values of $q$ and $(\underline{r},\overline{r})$.} We then estimate the AR($2$) parameters $\boldsymbol{a} = (a_1,a_2)$ and the long-run error variance $\sigma^2$ by the procedures from Section \ref{sec-error-var} with $q = 25$ and $(\underline{r},\overline{r}) = (1,10)$. This gives the estimators $\widehat{a}_1 = 0.164$, $\widehat{a}_2 = 0.175$ and $\widehat{\sigma}^2 = 0.737$.
 % %Order = 2, LRV = 0.737387, a1 = 0.164, a2 = 0.175, sigma_eta^2 = 0.3227605
@@ -317,7 +317,7 @@ segments(reject_set$startpoint, reject_set$values,
 @
 
 
-\section{Long-run variance estimator}\label{sec:lrv}
+%\section{Long-run variance estimator}\label{sec:lrv}
 \bibliography{bibliography.bib}
 \bibliographystyle{ims}
 \end{document}
