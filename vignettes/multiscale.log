@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6840 64-bit) (preloaded format=pdflatex 2018.10.16)  2 SEP 2020 18:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6840 64-bit) (preloaded format=pdflatex 2018.10.16)  2 SEP 2020 18:34
 entering extended mode
 **./multiscale.tex
 (multiscale.tex
@@ -556,10 +556,10 @@ th_vals
 
 [6]
 LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10.95> not available
-(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 284.
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 286.
 
- [7] [8] [9] [10]
-Overfull \hbox (1.79501pt too wide) in paragraph at lines 556--557
+ [7] [8] [9] [10] [11]
+Overfull \hbox (1.79501pt too wide) in paragraph at lines 574--575
 \T1/aer/m/n/10.95 ing the hy-poth-e-sis $\OML/cmm/m/it/10.95 H[]$ \T1/aer/m/n/1
 0.95 that $\OML/cmm/m/it/10.95 [] \OT1/cmr/m/n/10.95 = \OML/cmm/m/it/10.95 []
 $ \T1/aer/m/n/10.95 on an in-ter-val $\OMS/cmsy/m/n/10.95 I[]$\T1/aer/m/n/10.95
@@ -567,7 +567,7 @@ $ \T1/aer/m/n/10.95 on an in-ter-val $\OMS/cmsy/m/n/10.95 I[]$\T1/aer/m/n/10.95
  []
 
 
-Overfull \hbox (11.26334pt too wide) in paragraph at lines 556--557
+Overfull \hbox (11.26334pt too wide) in paragraph at lines 574--575
 \T1/aer/m/n/10.95 where, as be-fore, $\OML/cmm/m/it/10.95 a[] \OT1/cmr/m/n/10.9
 5 = \OMS/cmsy/m/n/10.95 f[]\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 e=h[]\OT1/cm
 r/m/n/10.95 )\OMS/cmsy/m/n/10.95 g[]\OML/cmm/m/it/10.95 = [] []\OT1/cmr/m/n/10.
@@ -575,34 +575,33 @@ r/m/n/10.95 )\OMS/cmsy/m/n/10.95 g[]\OML/cmm/m/it/10.95 = [] []\OT1/cmr/m/n/10.
 L/cmm/m/it/10.95 b[] \OT1/cmr/m/n/10.95 = []$\T1/aer/m/n/10.95 .
  []
 
-[11] [12] [13] [14] [15] [16] [17]
-Underfull \hbox (badness 6927) in paragraph at lines 864--866
+[12] [13] [14] [15] [16] [17] [18]
+Underfull \hbox (badness 6927) in paragraph at lines 882--884
 \T1/aer/m/n/10.95 where $[][]$ de-notes the de-notes the $\OML/cmm/m/it/10.95 p
  \OMS/cmsy/m/n/10.95  \OML/cmm/m/it/10.95 p$ \T1/aer/m/n/10.95 sam-ple co-vari
 -ance ma-trix
  []
 
 
-LaTeX Warning: Reference `c-recursion' on page 18 undefined on input line 868.
+LaTeX Warning: Reference `c-recursion' on page 19 undefined on input line 886.
 
 
-LaTeX Warning: Reference `c-recursion' on page 18 undefined on input line 868.
-
-[18]
-
-LaTeX Warning: Reference `c-recursion' on page 19 undefined on input line 872.
+LaTeX Warning: Reference `c-recursion' on page 19 undefined on input line 886.
 
 
-LaTeX Warning: Reference `YW-eq' on page 19 undefined on input line 872.
+LaTeX Warning: Reference `c-recursion' on page 19 undefined on input line 890.
 
-(multiscale.bbl [19]) [20] (multiscale.aux)
+
+LaTeX Warning: Reference `YW-eq' on page 19 undefined on input line 890.
+
+[19] (multiscale.bbl [20]) [21] (multiscale.aux)
 
 LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
  6780 strings out of 492970
- 117708 string characters out of 3135857
+ 117775 string characters out of 3135857
  291324 words of memory out of 3000000
  10508 multiletter control sequences out of 15000+200000
  36754 words of font info for 79 fonts, out of 3000000 for 9000
@@ -628,9 +627,9 @@ x10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
 am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on multiscale.pdf (20 pages, 292651 bytes).
+Output written on multiscale.pdf (21 pages, 294486 bytes).
 PDF statistics:
- 155 PDF objects out of 1000 (max. 8388607)
+ 158 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  5 words of extra memory for PDF output out of 10000 (max. 10000000)
 

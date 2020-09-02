@@ -160,7 +160,7 @@ This step is done with these lines of code (running this can take a while):
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 1.191727
+[1] 1.859337
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
@@ -252,14 +252,16 @@ All these steps are not necessary for performing the test, they are already inco
 +                            sim_runs = 10)
 \end{Sinput}
 \begin{Soutput}
-For the given time series we reject H_0 with probability 0.05 . Psihat_statistic =  3.136008 . Gaussian quantile value =  2.061489 
+For the given time series we reject H_0 with probability 0.05 .
+ Psihat_statistic =  3.136008 .
+ Gaussian quantile value =  2.095081 
 \end{Soutput}
 \begin{Sinput}
 > str(results)
 \end{Sinput}
 \begin{Soutput}
 List of 4
- $ quant         : num 2.06
+ $ quant         : num 2.1
  $ stat          : num 3.14
  $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 0 0 0 0 0 ...
  $ gset_with_vals:'data.frame':	1136 obs. of  5 variables:
@@ -277,7 +279,7 @@ List of 4
 \end{Soutput}
 \end{Schunk}
 
-Now we are ready to present the results.First, we plot the the observed time series.
+Now we are ready to present the results. First, we plot the the observed time series.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -290,33 +292,49 @@ Now we are ready to present the results.First, we plot the the observed time ser
 \end{Sinput}
 \end{Schunk}
 
-Now we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the two trend functions $\lambda_1$ and $\lambda_2$, where the bandwidth is set to $7$ days and a rectangular kernel is used. This is not necessary but sometimes useful.
-% <<>>=
-% nadaraya_watson_smoothing <- function(u, data_p, grid_p, bw){
-%   result      = 0
-%   norm        = 0
-%   T_size      = length(data_p)
-%   result = sum((abs((grid_p - u) / bw) <= 1) * data_p)
-%   norm = sum((abs((grid_p - u) / bw) <= 1))
-%   return(result/norm)
-% }
-% 
-% grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
-% smoothed_1  <- mapply(nadaraya_watson_smoothing, grid_points,
-%                       MoreArgs = list(covid[, 1], grid_points,
-%                                       bw = 3.5 / t_len))
-% 
-% smoothed_2  <- mapply(nadaraya_watson_smoothing, grid_points,
-%                       MoreArgs = list(covid[, 2], grid_points,
-%                                       bw = 3.5 / t_len))
-% 
-% plot(smoothed_1, ylim=c(min(covid[, 1], covid[, 2]),
-%                         max(covid[, 1], covid[, 2])),
-%      type="l", col="blue", ylab="", xlab = "", mgp=c(1,0.5,0))
-% title(main = "(b) smoothed curves from (a)", font.main = 1, line = 0.5)
-% lines(smoothed_2, col="red")
-% @
-% 
+Then we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the trend function $m$, where the bandwidth is set to $0.01, 0.05, 0.1, 0.15, 0.2$ and a rectangular kernel is used. This is not necessary but sometimes useful.
+\begin{Schunk}
+\begin{Sinput}
+> # Epanechnikov kernel function, which is defined as f(x) = 3/4(1-x^2)
+> # for |x|<1 and 0 elsewhere
+> epanechnikov <- function(x)
++ {
++   if (abs(x)<1)
++   {
++     result = 3/4 * (1 - x*x)
++   } else {
++     result = 0
++   }
++   return(result)
++ }
+> smoothing <-function(u, data_p, grid_p, bw){
++   result = 0
++   norm = 0
++   for (i in 1:length(data_p)){
++     result = result + epanechnikov((u - grid_p[i])/bw) * data_p[i]
++     norm = norm + epanechnikov((u - grid_p[i])/bw) 
++   }
++   return(result/norm)
++ 
++ }
+> h <- c(0.01, 0.05, 0.1, 0.15, 0.2)
+> grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
+> plot(NA, xlim = c(1659, 2019), ylim = c(8, 10.5),
++      xlab = 'year', ylab = 'temperature',
++      yaxp  = c(8, 10, 2), xaxp = c(1675, 2025, 7),
++      mgp=c(2,0.5,0))
+> for (i in 1:5){
++     smoothed_curve <- mapply(smoothing, grid_points,
++                              MoreArgs = list(temperature, grid_points, h[i]))
++     lines(ts_start:(ts_start + t_len - 1), smoothed_curve, lty = i) 
++   }
+> legend(1950, 9,legend=c("h = 0.01", "h = 0.05", "h = 0.10", "h = 0.15", "h = 0.2"),
++        lty = 1:5, cex = 0.95, ncol=1)
+> title(main = "(b) smoothed curves from (a) for different bandwidths",
++       font.main = 1, line = 0.5)
+\end{Sinput}
+\end{Schunk}
+
 % Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020b}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
 % 
 % According to theoretical results in this paper, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that there is a difference between the functions $\lambda_1$ and $\lambda_2$ on each of these intervals.
@@ -547,7 +565,7 @@ This step is done with these lines of code:
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.174247
+[1] 2.197973
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -706,14 +724,14 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 \end{Sinput}
 \begin{Soutput}
 We reject H_0 with probability 0.05 . Psihat_statistic =  15.45687 .
- Number of pairwise rejections =  10 out of  10 . Gaussian quantile value =  2.185784 
+ Number of pairwise rejections =  10 out of  10 . Gaussian quantile value =  2.229358 
 \end{Soutput}
 \begin{Sinput}
 > str(results)
 \end{Sinput}
 \begin{Soutput}
 List of 5
- $ quant           : num 2.19
+ $ quant           : num 2.23
  $ stat            : num 15.5
  $ stat_pairwise   : num [1:5, 1:5] 0 0 0 0 0 ...
  $ ijset           :'data.frame':	10 obs. of  2 variables:
