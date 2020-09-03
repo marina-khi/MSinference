@@ -38,14 +38,11 @@ the following list:
   \item \verb|estimate_lrv()|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}. 
 }
 
-%To the best of our knowledge, our \textbf{multiscale} package is the first software
-%package that offers the estimation methods of \cite{KhismatullinaVogt2020a} and \cite{KhismatullinaVogt2020b}.
-
 To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2020a}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2020b}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
 
 The temperature dataset can be obtained from the \textbf{multiscale} package using the function \verb|data(temperature, package = "multiscale")|. The COVID-19 dataset can be obtained from the \textbf{multiscale} package using the function \linebreak \verb|data(covid, package = "multiscale")|.
 
-This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020a} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020b} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). Section \ref{sec:concl} concludes.
+This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020a} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020b} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
 
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
@@ -68,28 +65,26 @@ As you can see, this is an array of length $T = 359$ where each element denotes 
 \begin{Schunk}
 \begin{Sinput}
 > t_len    <- length(temperature)
+> t_len
+\end{Sinput}
+\begin{Soutput}
+[1] 359
+\end{Soutput}
+\begin{Sinput}
 > ts_start <- 1659
 \end{Sinput}
 \end{Schunk}
 
-Here is the plot of the data:
-
-\begin{Schunk}
-\begin{Sinput}
-> plot(ts_start:(ts_start + t_len - 1), temperature, type = 'l',
-+      lty = 1, xlab = 'year', ylab = 'temperature')
-\end{Sinput}
-\end{Schunk}
 
 We assume that the temperature data $Y_{t}$ follow the nonparametric trend model
 \begin{equation*}
-Y_{t} = m(t/T) + \varepsilon_t,
+Y_{t} = m(t/T) + \varepsilon_t \quad \text{ for } t = 1, \ldots, T,
 \end{equation*}
-where $m$ is the unknown time trend of interest. We are interested in identifying local increases/decreases of the trend function $m$. We assume throughout that $m$ is continuously differentiable on $[0,1]$. The test problem then can be formulated as follows: Let $H_0(u,h)$ be the hypothesis that $m$ is constant on the interval $[u-h,u+h]$, or, equivalently,
+where $m$ is the unknown time trend of interest. We are interested in identifying local increases/decreases of the trend function $m$. We assume throughout that $m$ is continuously differentiable on $[0,1]$. The test problem then can be formulated as follows: Let $H_0(u,h)$ be the hypothesis that $m$ is constant on the interval $[u-h,u+h] \in [0, 1]$, or, equivalently,
 \[ H_0(u,h): m^\prime(w) = 0 \text { for all } w \in [u-h,u+h]. \]
 We want to test the hypothesis $H_0(u,h)$ simultaneously for many different intervals $[u-h,u+h]$. The overall null hypothesis is thus given by
 \[ H_0: \text{ The hypothesis } H_0(u,h) \text{ holds true for all } (u,h) \in \mathcal{G}_T, \]
-where $\mathcal{G}_T$ is the set of points $(u,h)$ that is chosen by default for $T = 359$. Specifically, we take into account all locations $u$ on an equidistant grid \linebreak $u = 5/T, 10/T, \ldots, 355/T$ and all bandwidths $h=5/T, 10/T, 15/T,\ldots, 85/T$.
+where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this application we take into account the default set of points, i.e. all locations $u$ on an equidistant grid \linebreak $u = 5/T, 10/T, \ldots, 355/T$ and all bandwidths $h=5/T, 10/T, 15/T,\ldots, 85/T$. More on the construction of $\mathcal{G}_T$ you can find in \cite{KhismatullinaVogt2020a} and in the package documentation.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -118,6 +113,9 @@ where $\eta_t$ are i.i.d.\ innovations with mean $0$ and variance $\nu^2$. We es
 \begin{Soutput}
 Long-run variance is equal to  0.7576827 
 \end{Soutput}
+\begin{Sinput}
+> sigmahat <- sqrt(parameters$lrv)
+\end{Sinput}
 \end{Schunk}
 
 Details of the estimation procedure together with the description of the tuning parameters are deferred to Section \ref{sec:lrv}.
@@ -131,7 +129,7 @@ Throughout the section, we set the significance level to $\alpha=0.05$ and the n
 \end{Sinput}
 \end{Schunk}
 
-Since we consider increases and decreases of the function, we basically estimate the first derivative:
+Since we consider increases and decreases of the function, we are interested in the first derivative of the function:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -139,13 +137,15 @@ Since we consider increases and decreases of the function, we basically estimate
 \end{Sinput}
 \end{Schunk}
 
-Now we are ready to perfrom the test.
+The package currently supports only \verb|deriv_order = 0| for testing $m = 0$ and \verb|deriv_order = 1| for testing $m^\prime = 0$.
+
+Now we are ready to perform the test.
 \begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
   \item Compute the quantile $q_{T,\text{Gauss}}(\alpha)$ by Monte Carlo simulations. Specifically, draw a large number $\verb|sim_runs| = 5000$ samples of independent standard normal random variables $\{Z_{t}^{(\ell)} : \, 1 \le t \le T \}$ for $1 \le \ell \le \verb|sim_runs|$. Compute the value $\Phi_T^{(\ell)}$ of the Gaussian statistic $\Phi_T$ for each sample $\ell$ by the following formula:
 \begin{align*}
 \Phi_T = \max_{(u, h) \in \mathcal{G}_T}\bigg\{ \Big|\sum\limits_{t=1}^T w_{t, T} Z_{t}\Big| - \lambda(h) \bigg\},
 \end{align*}
-where $w_{t, T}(u, h)$ are local linear kernel weights based on the Epanechnikov kernel, and $\lambda(h) = \sqrt{2 \log \{ 1/(2h) \}}$ is an additive correction term.
+where $w_{t, T}(u, h)$ are local linear kernel weights with the Epanechnikov kernel, and $\lambda(h) = \sqrt{2 \log \{ 1/(2h) \}}$ is an additive correction term.
 
 Then calculate the empirical $(1-\alpha)$-quantile $\widehat{q}_{T,\text{Gauss}}(\alpha)$ from the values $\{ \Phi_T^{(\ell)}: 1 \le \ell \le \verb|sim_runs| \}$. Use $\widehat{q}_{T,\text{Gauss}}(\alpha)$ as an approximation of the quantile $q_{T,\text{Gauss}}(\alpha)$.
 This step is done with these lines of code (running this can take a while):
@@ -159,19 +159,22 @@ This step is done with these lines of code (running this can take a while):
 > quant <- quantiles$quant[2, pos]
 > quant
 \end{Sinput}
+\begin{Soutput}
+[1] 1.859337
+\end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
   \begin{equation*}
  \widehat{\psi}_{T}(u, h) := \sum\nolimits_{t=1}^T w_{t, T}(u, h) Y_{t},
 \end{equation*}
 where, as before, $w_{t, T}(u, h)$ are local linear kernel weights based on the Epanechnikov kernel. Based on these kernel averages, calculate the test statistic
-$$\hat{\Psi}_{T} = \max_{(u, h)\in \mathcal{G}_T} \bigg\{ \Big| \frac{\hat{\psi}_{T}(u, h) }{\widehat{\sigma}}\Big| - \lambda(h) \Bigg\}.$$
+$$\widehat{\Psi}_{T} = \max_{(u, h)\in \mathcal{G}_T} \bigg\{ \Big| \frac{\widehat{\psi}_{T}(u, h) }{\widehat{\sigma}}\Big| - \lambda(h) \Bigg\}.$$
 This step is done with these lines of code:
 
 \begin{Schunk}
 \begin{Sinput}
 > result <- compute_statistics(data = temperature,
-+                              sigma = sqrt(parameters$lrv),
++                              sigma = sigmahat,
 +                              grid = grid, deriv_order = deriv_order)
 > str(result)
 \end{Sinput}
@@ -193,75 +196,145 @@ List of 2
 \end{Schunk}
 We get the list with the following elements as the result:
 \begin{itemize}
-\item \verb|stat| denotes $\hat{\Psi}_{T}$;
-\item \verb|gset_with_values| is a dataframe that contains the normalised kernel averages $\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$ together with their values that include correction term $\Big|\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}\Big| - \lambda(h)$. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of 
-$\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$, and column \verb|vals_cor| contains the values of $\Big|\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}\Big| - \lambda(h)$.
+\item \verb|stat| denotes $\widehat{\Psi}_{T}$;
+\item \verb|gset_with_vals| is a dataframe that contains the normalised kernel average. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of 
+$\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$, and column \verb|vals_cor| contains the values of $\Big|\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}\Big| - \lambda(h)$ for the given pair $(u, h)$.
 \end{itemize}
 
 \item Now we carry out the test itself, comparing the normalised values of kernel averagess from Step 2 with the critical value from Step 1. It is done by the following lines of code:
 \begin{Schunk}
 \begin{Sinput}
-> gset_with_values <- result$gset_with_vals
-> test_results <- gset_with_values$vals > quant
-> gset_with_values$test <- test_results
-> str(gset_with_values)
+> gset         <- result$gset_with_vals
+> test_results <- (gset$vals_cor > quant) * sign(gset$vals)
+> gset$test    <- test_results
+> str(gset)
+\end{Sinput}
+\begin{Soutput}
+'data.frame':	1136 obs. of  5 variables:
+ $ u       : num  0.0139 0.0279 0.0418 0.0557 0.0696 ...
+ $ h       : num  0.0279 0.0279 0.0279 0.0279 0.0279 ...
+ $ vals    : num  -0.263 -1.38 -0.914 0.587 0.128 ...
+ $ vals_cor: num  -2.14 -1.02 -1.49 -1.82 -2.27 ...
+ $ test    : num  0 0 0 0 0 0 0 0 0 0 ...
+ - attr(*, "out.attrs")=List of 2
+  ..$ dim     : Named int  71 16
+  .. ..- attr(*, "names")= chr  "u" "h"
+  ..$ dimnames:List of 2
+  .. ..$ u: chr  "u=0.01392758" "u=0.02785515" "u=0.04178273" "u=0.05571031" ...
+  .. ..$ h: chr  "h=0.02785515" "h=0.04178273" "h=0.05571031" "h=0.06963788" ...
+\end{Soutput}
+\end{Schunk}
+
+Now the dataframe \verb|gset| contains everything that was in \verb|result$gset_with_vals| before and an additional column \verb|test|. The values in this column are calculated as follows. It is either \verb|1| if we reject the respective null hypothesis $H_0(u, h)$ and detect an increase in the trend, \verb|0| if we do not reject $H_0(u, h)$. or \verb|-1| if we reject the respective null hypothesis $H_0(u, h)$ and detect an decrease in the trend. In our application we do not detect any decreases in the trend function $m$:
+
+\begin{Schunk}
+\begin{Sinput}
+> sum(gset$test == -1)
+\end{Sinput}
+\begin{Soutput}
+[1] 0
+\end{Soutput}
+\end{Schunk}
+
+
+We can now use this dataframe to produce the plots for illustrating the results.
+\end{enumerate}
+
+All these steps are not necessary for performing the test, they are already incorporated in the function \verb|multiscale_test()|:
+
+\begin{Schunk}
+\begin{Sinput}
+> results <- multiscale_test(data = temperature,
++                            sigma = sigmahat,
++                            grid = grid,
++                            alpha = alpha,
++                            deriv_order = deriv_order,
++                            sim_runs = 10)
+\end{Sinput}
+\begin{Soutput}
+For the given time series we reject H_0 with probability 0.05 .
+ Psihat_statistic =  3.136008 .
+ Gaussian quantile value =  2.095081 
+\end{Soutput}
+\begin{Sinput}
+> str(results)
+\end{Sinput}
+\begin{Soutput}
+List of 4
+ $ quant         : num 2.1
+ $ stat          : num 3.14
+ $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 0 0 0 0 0 ...
+ $ gset_with_vals:'data.frame':	1136 obs. of  5 variables:
+  ..$ u       : num [1:1136] 0.0139 0.0279 0.0418 0.0557 0.0696 ...
+  ..$ h       : num [1:1136] 0.0279 0.0279 0.0279 0.0279 0.0279 ...
+  ..$ vals    : num [1:1136] -0.263 -1.38 -0.914 0.587 0.128 ...
+  ..$ vals_cor: num [1:1136] -2.14 -1.02 -1.49 -1.82 -2.27 ...
+  ..$ test    : num [1:1136] 0 0 0 0 0 0 0 0 0 0 ...
+  ..- attr(*, "out.attrs")=List of 2
+  .. ..$ dim     : Named int [1:2] 71 16
+  .. .. ..- attr(*, "names")= chr [1:2] "u" "h"
+  .. ..$ dimnames:List of 2
+  .. .. ..$ u: chr [1:71] "u=0.01392758" "u=0.02785515" "u=0.04178273" "u=0.05571031" ...
+  .. .. ..$ h: chr [1:16] "h=0.02785515" "h=0.04178273" "h=0.05571031" "h=0.06963788" ...
+\end{Soutput}
+\end{Schunk}
+
+Now we are ready to present the results. First, we plot the the observed time series.
+
+\begin{Schunk}
+\begin{Sinput}
+> plot(ts_start:(ts_start + t_len - 1), temperature, type = 'l',
++      lty = 1, xlab = 'year', ylab = 'temperature',
++      ylim = c(min(temperature) - 0.1, max(temperature) + 0.1))
+> title(main = "(a) observed yearly temperature", font.main = 1,
++       line = 0.5)
+> 
 \end{Sinput}
 \end{Schunk}
-\end{enumerate}
-% Now each dataframe from \verb|gset_with_values| contains additional column that is either \verb|TRUE| if we reject the respective null hypothesis $H_0^{(i, j, k)}$ or \verb|FALSE| if we do not reject. We can use these dataframes to produce the plots for illustrating the results.
-% \end{enumerate}
-% 
-% You do not have to perform these steps yourself, the function \verb|multiscale_test()| carries them out automatically for you:
-% 
-% <<>>=
-% results <- multiscale_test(data = covid, sigma = sigmahat,
-%                            n_ts = n, grid = grid, ijset = ijset,
-%                            alpha = alpha,
-%                            sim_runs = sim_runs)
-% str(results)
-% @
-% 
-% Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2020b}.
-% 
-% First, we plot the the observed time series for the two countries.
-% 
-% <<>>=
-% plot(covid[, 1], ylim=c(min(covid[, 1], covid[, 2]),
-%                         max(covid[, 1], covid[, 2])),
-%      type="l", col="blue", ylab="", xlab="", mgp=c(1, 0.5, 0))
-% lines(covid[, 2], col="red")
-% title(main = "(a) observed new cases per day", font.main = 1, line = 0.5)
-% legend("topright", inset = 0.02, legend=c("Germany", "UK"),
-%        col = c("blue", "red"), lty = 1, cex = 0.95, ncol = 1)
-% @
-% 
-% Now we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the two trend functions $\lambda_1$ and $\lambda_2$, where the bandwidth is set to $7$ days and a rectangular kernel is used. This is not necessary but sometimes useful.
-% <<>>=
-% nadaraya_watson_smoothing <- function(u, data_p, grid_p, bw){
-%   result      = 0
-%   norm        = 0
-%   T_size      = length(data_p)
-%   result = sum((abs((grid_p - u) / bw) <= 1) * data_p)
-%   norm = sum((abs((grid_p - u) / bw) <= 1))
-%   return(result/norm)
-% }
-% 
-% grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
-% smoothed_1  <- mapply(nadaraya_watson_smoothing, grid_points,
-%                       MoreArgs = list(covid[, 1], grid_points,
-%                                       bw = 3.5 / t_len))
-%   
-% smoothed_2  <- mapply(nadaraya_watson_smoothing, grid_points,
-%                       MoreArgs = list(covid[, 2], grid_points, 
-%                                       bw = 3.5 / t_len))
-% 
-% plot(smoothed_1, ylim=c(min(covid[, 1], covid[, 2]),
-%                         max(covid[, 1], covid[, 2])), 
-%      type="l", col="blue", ylab="", xlab = "", mgp=c(1,0.5,0))
-% title(main = "(b) smoothed curves from (a)", font.main = 1, line = 0.5)
-% lines(smoothed_2, col="red")
-% @
-% 
+
+Then we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the trend function $m$, where the bandwidth is set to $0.01, 0.05, 0.1, 0.15, 0.2$ and a rectangular kernel is used. This is not necessary but sometimes useful.
+\begin{Schunk}
+\begin{Sinput}
+> # Epanechnikov kernel function, which is defined as f(x) = 3/4(1-x^2)
+> # for |x|<1 and 0 elsewhere
+> epanechnikov <- function(x)
++ {
++   if (abs(x)<1)
++   {
++     result = 3/4 * (1 - x*x)
++   } else {
++     result = 0
++   }
++   return(result)
++ }
+> smoothing <-function(u, data_p, grid_p, bw){
++   result = 0
++   norm = 0
++   for (i in 1:length(data_p)){
++     result = result + epanechnikov((u - grid_p[i])/bw) * data_p[i]
++     norm = norm + epanechnikov((u - grid_p[i])/bw) 
++   }
++   return(result/norm)
++ 
++ }
+> h <- c(0.01, 0.05, 0.1, 0.15, 0.2)
+> grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
+> plot(NA, xlim = c(1659, 2019), ylim = c(8, 10.5),
++      xlab = 'year', ylab = 'temperature',
++      yaxp  = c(8, 10, 2), xaxp = c(1675, 2025, 7),
++      mgp=c(2,0.5,0))
+> for (i in 1:5){
++     smoothed_curve <- mapply(smoothing, grid_points,
++                              MoreArgs = list(temperature, grid_points, h[i]))
++     lines(ts_start:(ts_start + t_len - 1), smoothed_curve, lty = i) 
++   }
+> legend(1950, 9,legend=c("h = 0.01", "h = 0.05", "h = 0.10", "h = 0.15", "h = 0.2"),
++        lty = 1:5, cex = 0.95, ncol=1)
+> title(main = "(b) smoothed curves from (a) for different bandwidths",
++       font.main = 1, line = 0.5)
+\end{Sinput}
+\end{Schunk}
+
 % Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020b}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
 % 
 % According to theoretical results in this paper, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that there is a difference between the functions $\lambda_1$ and $\lambda_2$ on each of these intervals.
@@ -492,7 +565,7 @@ This step is done with these lines of code:
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.226911
+[1] 2.197973
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -651,14 +724,14 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 \end{Sinput}
 \begin{Soutput}
 We reject H_0 with probability 0.05 . Psihat_statistic =  15.45687 .
- Number of pairwise rejections =  10 out of  10 . Gaussian quantile value =  2.213674 
+ Number of pairwise rejections =  10 out of  10 . Gaussian quantile value =  2.229358 
 \end{Soutput}
 \begin{Sinput}
 > str(results)
 \end{Sinput}
 \begin{Soutput}
 List of 5
- $ quant           : num 2.21
+ $ quant           : num 2.23
  $ stat            : num 15.5
  $ stat_pairwise   : num [1:5, 1:5] 0 0 0 0 0 ...
  $ ijset           :'data.frame':	10 obs. of  2 variables:
@@ -833,6 +906,6 @@ where $\widehat{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widehat{r}_{t,T}^2$ with $\wi
 \section{Conclusion}\label{sec:concl}
 In development.
 
-\bibliography{bibliography.bib}
+\bibliography{bibliography}
 \bibliographystyle{ims}
 \end{document}
