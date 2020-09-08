@@ -137,7 +137,7 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
           ".\n Gaussian quantile value = ", quant, "\n")
     } else {
       cat("For the given time series we fail to reject H_0 with probability",
-          alpha, ". Psihat_statistic = ", stat,
+          alpha, ".\n Psihat_statistic = ", stat,
           ".\n Gaussian quantile value = ", quant, "\n")
     }
 
@@ -151,11 +151,11 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
       cat("We reject H_0 with probability", alpha, ". Psihat_statistic = ",
           stat, ".\n Number of pairwise rejections = ",
           sum(psi$stat_pairwise > quant, na.rm = TRUE), "out of ", nrow(ijset),
-          ". Gaussian quantile value = ", quant, "\n")
+          ".\n Gaussian quantile value = ", quant, "\n")
     } else {
       cat("We fail to reject H_0 with probability", alpha,
-          ". Psihat_statistic = ", stat,
-          ". Gaussian quantile value = ", quant, "\n")
+          ".\n Psihat_statistic = ", stat,
+          ".\n Gaussian quantile value = ", quant, "\n")
     }
 
     gset_with_values <- psi$gset_with_values

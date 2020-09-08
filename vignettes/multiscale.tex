@@ -44,6 +44,11 @@ The temperature dataset can be obtained from the \textbf{multiscale} package usi
 
 This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020a} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020b} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
 
+\begin{Schunk}
+\begin{Sinput}
+> knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+\end{Sinput}
+\end{Schunk}
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
@@ -89,12 +94,13 @@ where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this appl
 \begin{Schunk}
 \begin{Sinput}
 > grid <- construct_grid(t_len) 
-> str(grid$gset * 1)
+> str(grid$gset, max.level = 1, vec.len = 4)
 \end{Sinput}
 \begin{Soutput}
 'data.frame':	1136 obs. of  2 variables:
  $ u: num  0.0139 0.0279 0.0418 0.0557 0.0696 ...
  $ h: num  0.0279 0.0279 0.0279 0.0279 0.0279 ...
+ - attr(*, "out.attrs")=List of 2
 \end{Soutput}
 \end{Schunk}
 
@@ -160,7 +166,7 @@ This step is done with these lines of code (running this can take a while):
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 1.859337
+[1] 1.748363
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
@@ -175,23 +181,19 @@ This step is done with these lines of code:
 \begin{Sinput}
 > result <- compute_statistics(data = temperature,
 +                              sigma = sigmahat,
-+                              grid = grid, deriv_order = deriv_order)
-> str(result)
++                              grid = grid,
++                              deriv_order = deriv_order)
+> str(result, max.level = 2, vec.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 2
  $ stat          : num 3.14
  $ gset_with_vals:'data.frame':	1136 obs. of  4 variables:
-  ..$ u       : num [1:1136] 0.0139 0.0279 0.0418 0.0557 0.0696 ...
-  ..$ h       : num [1:1136] 0.0279 0.0279 0.0279 0.0279 0.0279 ...
-  ..$ vals    : num [1:1136] -0.263 -1.38 -0.914 0.587 0.128 ...
-  ..$ vals_cor: num [1:1136] -2.14 -1.02 -1.49 -1.82 -2.27 ...
+  ..$ u       : num [1:1136] 0.0139 0.0279 ...
+  ..$ h       : num [1:1136] 0.0279 0.0279 ...
+  ..$ vals    : num [1:1136] -0.263 -1.38 ...
+  ..$ vals_cor: num [1:1136] -2.14 -1.02 ...
   ..- attr(*, "out.attrs")=List of 2
-  .. ..$ dim     : Named int [1:2] 71 16
-  .. .. ..- attr(*, "names")= chr [1:2] "u" "h"
-  .. ..$ dimnames:List of 2
-  .. .. ..$ u: chr [1:71] "u=0.01392758" "u=0.02785515" "u=0.04178273" "u=0.05571031" ...
-  .. .. ..$ h: chr [1:16] "h=0.02785515" "h=0.04178273" "h=0.05571031" "h=0.06963788" ...
 \end{Soutput}
 \end{Schunk}
 We get the list with the following elements as the result:
@@ -207,25 +209,20 @@ $\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$, and column \verb|vals_cor| 
 > gset         <- result$gset_with_vals
 > test_results <- (gset$vals_cor > quant) * sign(gset$vals)
 > gset$test    <- test_results
-> str(gset)
+> str(gset, max.level = 1, vec.len = 2)
 \end{Sinput}
 \begin{Soutput}
 'data.frame':	1136 obs. of  5 variables:
- $ u       : num  0.0139 0.0279 0.0418 0.0557 0.0696 ...
- $ h       : num  0.0279 0.0279 0.0279 0.0279 0.0279 ...
- $ vals    : num  -0.263 -1.38 -0.914 0.587 0.128 ...
- $ vals_cor: num  -2.14 -1.02 -1.49 -1.82 -2.27 ...
- $ test    : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ u       : num  0.0139 0.0279 ...
+ $ h       : num  0.0279 0.0279 ...
+ $ vals    : num  -0.263 -1.38 ...
+ $ vals_cor: num  -2.14 -1.02 ...
+ $ test    : num  0 0 0 0 0 ...
  - attr(*, "out.attrs")=List of 2
-  ..$ dim     : Named int  71 16
-  .. ..- attr(*, "names")= chr  "u" "h"
-  ..$ dimnames:List of 2
-  .. ..$ u: chr  "u=0.01392758" "u=0.02785515" "u=0.04178273" "u=0.05571031" ...
-  .. ..$ h: chr  "h=0.02785515" "h=0.04178273" "h=0.05571031" "h=0.06963788" ...
 \end{Soutput}
 \end{Schunk}
 
-Now the dataframe \verb|gset| contains everything that was in \verb|result$gset_with_vals| before and an additional column \verb|test|. The values in this column are calculated as follows. It is either \verb|1| if we reject the respective null hypothesis $H_0(u, h)$ and detect an increase in the trend, \verb|0| if we do not reject $H_0(u, h)$. or \verb|-1| if we reject the respective null hypothesis $H_0(u, h)$ and detect an decrease in the trend. In our application we do not detect any decreases in the trend function $m$:
+Now the dataframe \verb|gset| contains all the data from \linebreak \verb|result$gset_with_vals| before and an additional column \verb|test|. The values in this column are calculated as follows. It is either $1$ if we reject the respective null hypothesis $H_0(u, h)$ and detect an increase in the trend, $0$ if we do not reject $H_0(u, h)$. or $-1$ if we reject the respective null hypothesis $H_0(u, h)$ and detect an decrease in the trend. For example, in our application we do not detect any decreases in the trend function $m$:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -254,28 +251,23 @@ All these steps are not necessary for performing the test, they are already inco
 \begin{Soutput}
 For the given time series we reject H_0 with probability 0.05 .
  Psihat_statistic =  3.136008 .
- Gaussian quantile value =  2.095081 
+ Gaussian quantile value =  1.390933 
 \end{Soutput}
 \begin{Sinput}
-> str(results)
+> str(results, max.level = 2, vec.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 4
- $ quant         : num 2.1
+ $ quant         : num 1.39
  $ stat          : num 3.14
- $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 0 0 0 0 0 ...
+ $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 ...
  $ gset_with_vals:'data.frame':	1136 obs. of  5 variables:
-  ..$ u       : num [1:1136] 0.0139 0.0279 0.0418 0.0557 0.0696 ...
-  ..$ h       : num [1:1136] 0.0279 0.0279 0.0279 0.0279 0.0279 ...
-  ..$ vals    : num [1:1136] -0.263 -1.38 -0.914 0.587 0.128 ...
-  ..$ vals_cor: num [1:1136] -2.14 -1.02 -1.49 -1.82 -2.27 ...
-  ..$ test    : num [1:1136] 0 0 0 0 0 0 0 0 0 0 ...
+  ..$ u       : num [1:1136] 0.0139 0.0279 ...
+  ..$ h       : num [1:1136] 0.0279 0.0279 ...
+  ..$ vals    : num [1:1136] -0.263 -1.38 ...
+  ..$ vals_cor: num [1:1136] -2.14 -1.02 ...
+  ..$ test    : num [1:1136] 0 0 0 0 0 ...
   ..- attr(*, "out.attrs")=List of 2
-  .. ..$ dim     : Named int [1:2] 71 16
-  .. .. ..- attr(*, "names")= chr [1:2] "u" "h"
-  .. ..$ dimnames:List of 2
-  .. .. ..$ u: chr [1:71] "u=0.01392758" "u=0.02785515" "u=0.04178273" "u=0.05571031" ...
-  .. .. ..$ h: chr [1:16] "h=0.02785515" "h=0.04178273" "h=0.05571031" "h=0.06963788" ...
 \end{Soutput}
 \end{Schunk}
 
@@ -295,8 +287,8 @@ Now we are ready to present the results. First, we plot the the observed time se
 Then we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the trend function $m$, where the bandwidth is set to $0.01, 0.05, 0.1, 0.15, 0.2$ and a rectangular kernel is used. This is not necessary but sometimes useful.
 \begin{Schunk}
 \begin{Sinput}
-> # Epanechnikov kernel function, which is defined as f(x) = 3/4(1-x^2)
-> # for |x|<1 and 0 elsewhere
+> # Epanechnikov kernel function, which is defined
+> # as f(x) = 3/4(1-x^2) for |x|<1 and 0 elsewhere
 > epanechnikov <- function(x)
 + {
 +   if (abs(x)<1)
@@ -307,78 +299,67 @@ Then we plot the smoothed versions of the time series from (a), that is, the plo
 +   }
 +   return(result)
 + }
-> smoothing <-function(u, data_p, grid_p, bw){
-+   result = 0
+> smoothing <- function(u, data_p, grid_p, bw){
++   res = 0
 +   norm = 0
 +   for (i in 1:length(data_p)){
-+     result = result + epanechnikov((u - grid_p[i])/bw) * data_p[i]
-+     norm = norm + epanechnikov((u - grid_p[i])/bw) 
++     res = res + epanechnikov((u - grid_p[i]) / bw) * data_p[i]
++     norm = norm + epanechnikov((u - grid_p[i]) / bw)
 +   }
-+   return(result/norm)
-+ 
++   return(res/norm)
 + }
-> h <- c(0.01, 0.05, 0.1, 0.15, 0.2)
-> grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
+> bws <- c(0.01, 0.05, 0.1, 0.15, 0.2)
+> grid_points <- seq(from = 1 / t_len, to = 1,
++                    length.out = t_len)
 > plot(NA, xlim = c(1659, 2019), ylim = c(8, 10.5),
 +      xlab = 'year', ylab = 'temperature',
 +      yaxp  = c(8, 10, 2), xaxp = c(1675, 2025, 7),
-+      mgp=c(2,0.5,0))
++      mgp = c(2,0.5,0))
 > for (i in 1:5){
-+     smoothed_curve <- mapply(smoothing, grid_points,
-+                              MoreArgs = list(temperature, grid_points, h[i]))
-+     lines(ts_start:(ts_start + t_len - 1), smoothed_curve, lty = i) 
++     smoothed <- mapply(smoothing, grid_points,
++                        MoreArgs = list(temperature,
++                                        grid_points,
++                                        bws[i]))
++     lines(ts_start:(ts_start + t_len - 1), smoothed,
++           lty = i) 
 +   }
-> legend(1950, 9,legend=c("h = 0.01", "h = 0.05", "h = 0.10", "h = 0.15", "h = 0.2"),
+> legend(1900, 8.5, legend=c("bw = 0.01", "bw = 0.05", "bw = 0.10",
++                            "bw = 0.15", "bw = 0.2"),
 +        lty = 1:5, cex = 0.95, ncol=1)
-> title(main = "(b) smoothed curves from (a) for different bandwidths",
+> title(main = "(b) smoothed time series for different bandwidths",
 +       font.main = 1, line = 0.5)
 \end{Sinput}
 \end{Schunk}
 
-% Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020b}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
-% 
-% According to theoretical results in this paper, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that there is a difference between the functions $\lambda_1$ and $\lambda_2$ on each of these intervals.
-% 
-% <<>>=
-% l <- 1 #First comparison in ijset
-% gset       <- results$gset_with_values[[l]]
-% reject     <- subset(gset, test == TRUE, select = c(u, h))
-% reject_set <- data.frame('startpoint' = (reject$u - reject$h) * t_len,
-%                          'endpoint' = (reject$u + reject$h) * t_len,
-%                          'values' = 0)
-% reject_set$values <- (1:nrow(reject_set)) / nrow(reject_set)
-%     
-% #Produce minimal intervals
-% reject_min  <- compute_minimal_intervals(reject_set)
-% 
-% plot(NA, xlim=c(0, t_len),  ylim = c(0, 1 + 1 / nrow(reject_set)),
-%      xlab="", mgp=c(2, 0.5, 0), yaxt = "n", ylab = "")
-% title(main = "(c) minimal intervals produced by our test",
-%       font.main = 1, line = 0.5)
-% title(xlab = "days since the hundredth case", line = 1.7,
-%       cex.lab = 0.9)
-% segments(reject_min$startpoint, reject_min$values,
-%          reject_min$endpoint, reject_min$values, lwd = 2)
-% segments(reject_set$startpoint, reject_set$values,
-%          reject_set$endpoint, reject_set$values,
-%          col = "gray")
-% @
+Finally, we present the results produced by our test. Specifically, we depict in grey the set $\Pi^{+}_T$ which is the collection of time intervals $I_{(u,h)} = [u - h, u + h] \in [0, 1]$ for which our test rejects $H_0(u,h)$ and indicates an increase in the trend function. Furthermore, we depict in black the set of minimal intervals $\Pi^{+, \min}_T$ The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020a}. The function in the package that calculates the minimal intervals is \verb|compute_minimal_intervals()|.
 
 
+According to theoretical results in \cite{KhismatullinaVogt2002a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
 
-
-% %\caption{Summary of the results for the Central England temperature record. Panel (a) shows the observed temperature time series. Panel (b) depicts the minimal intervals in the set $\Pi_T^+$ produced by our multiscale test. These are $[1684,1744]$, $[1839,2009]$ and $[1864,2014]$. Panels (c) and (d) present the SiZer maps produced by our multiscale test and SiZer. }\label{fig:app:UK}
-% %\end{figure}
-% %
-% 
-% With the help of our multiscale method, we now test the null hypothesis $H_0$ that $m$ is constant on all intervals $[u-h,u+h]$ with $(u,h) \in \mathcal{G}_T^*$, where the grid $\mathcal{G}_T^*$ is defined in the same way as in Section \ref{sec-sim}. The results are presented in Figure \ref{fig:app:UK}. Panel (b) depicts the minimal intervals in the set $\Pi_T^+$ which is produced by our multiscale test $\mathcal{T}_{\text{MS}}$. The set of intervals $\Pi_T^-$ is empty in the present case. 
-% %The height at which a minimal interval $I_{u,h} = [u-h,u+h] \in \Pi_T^+$ is plotted indicates the value of the corresponding (additively corrected) test statistic $\widehat{\psi}_T(u,h) / \widehat{\sigma} - \lambda(h)$. The dashed line specifies the critical value $q_T(\alpha)$, where $\alpha = 0.05$ as already mentioned above. 
-% According to Proposition \ref{prop-test-3}, we can make the following simultaneous confidence statement about the collection of minimal intervals plotted in panel (b). We can claim, with confidence of about $95\%$, that the trend $m$ has some increase on each minimal interval. More specifically, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
-% 
-% an AR($2$) process. The SiZer maps of panels (c) and (d) are to be read as follows: Each pixel of the map corresponds to a location-scale point $(u,h)$, or put differently, to a time interval $[u-h,u+h]$. The pixel ($u,h)$ is coloured blue if the test indicates an increase in the trend $m$ on the interval $[u-h,u+h]$, red if the test indicates a decrease and purple if the test does not reject the null hypothesis that $m$ is constant on $[u-h,u+h]$. 
-% %Moreover, a pixel $(u,h)$ is coloured grey if the effective sample size $\text{ESS}^*(u,h)$ is smaller than $5$, in which case the pixel $(u,h)$ is not included in the location-scale grid $\mathcal{G}_T^*$. 
-% As can be seen, the two SiZer maps in panels (c) and (d) have a similar structure. Both our multiscale test and SiZer indicate increases in the trend $m$ during a short time period around $1700$ and towards the end of the sample. However, in contrast to SiZer, our method allows to make formal confidence statements about the regions of blue pixels in the SiZer map. In particular, as the set of blue pixels in panel (c) exactly corresponds to the collection of intervals $\Pi_T^+$, we can claim, with confidence of about $95\%$, that the trend $m$ has an increase on each time interval represented by a blue pixel in panel (c). 
-
+\begin{Schunk}
+\begin{Sinput}
+> gset   <- results$gset_with_vals
+> reject <- subset(gset, (test == 1 & u - h >= 0 & u + h <= 1),
++                  select = c(u, h))
+> p_plus <- data.frame('startpoint' = (reject$u - reject$h) *
++                        t_len + ts_start,
++                      'endpoint' = (reject$u + reject$h) * t_len +
++                        ts_start, 'values' = 0)
+> p_plus$values <- (1:nrow(p_plus)) / nrow(p_plus)
+> p_plus_min    <- compute_minimal_intervals(p_plus)
+> plot(NA, xlim=c(ts_start, ts_start + t_len - 1),
++      ylim = c(0, 1 + 1 / nrow(p_plus)),
++      xlab=" ", mgp=c(2, 0.5, 0), yaxt = "n", ylab = "")
+> title(main = "(c) (minimal) intervals produced by the test",
++       font.main = 1, line = 0.5)
+> title(xlab = "year", line = 1.7, cex.lab = 0.9)
+> segments(p_plus_min$startpoint, p_plus_min$values,
++          p_plus_min$endpoint, p_plus_min$values, lwd = 2)
+> segments(p_plus$startpoint, p_plus$values,
++          p_plus$endpoint, p_plus$values,
++          col = "gray")
+\end{Sinput}
+\end{Schunk}
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 
@@ -565,7 +546,7 @@ This step is done with these lines of code:
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.197973
+[1] 2.169989
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -581,62 +562,13 @@ This step is done with these lines of code:
 \begin{Sinput}
 > result <- compute_statistics(data = covid, sigma = sigmahat,
 +                              n_ts = n, grid = grid)
-> str(result)
+> str(result, max.level = 3, vec.len = 2, list.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 4
  $ stat            : num 15.5
  $ stat_pairwise   : num [1:5, 1:5] 0 0 0 0 0 ...
- $ ijset           :'data.frame':	10 obs. of  2 variables:
-  ..$ i: int [1:10] 1 1 2 1 2 3 1 2 3 4
-  ..$ j: int [1:10] 2 3 3 4 4 4 5 5 5 5
-  ..- attr(*, "out.attrs")=List of 2
-  .. ..$ dim     : Named int [1:2] 5 5
-  .. .. ..- attr(*, "names")= chr [1:2] "i" "j"
-  .. ..$ dimnames:List of 2
-  .. .. ..$ i: chr [1:5] "i=1" "i=2" "i=3" "i=4" ...
-  .. .. ..$ j: chr [1:5] "j=1" "j=2" "j=3" "j=4" ...
- $ gset_with_values:List of 10
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.15 -2.71 -2.56 -1.95 1.61 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.04 -0.25 1.97 2.66 1.74 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.427 -0.174 2.168 3.389 5.821 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.632 -2.371 -2.073 -2.521 0.363 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.31 -2.28 -1.84 -1.68 -1.5 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.881 -0.634 1.339 2.413 4.709 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.977 -1.104 -0.561 -0.827 -2.728 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.36714 -1.02287 -0.33388 -0.00825 1.66979 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.731 -1.884 -0.101 0.822 1.676 ...
-  ..$ :'data.frame':	140 obs. of  3 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.82 -1.51 -1.26 -1.1 0.43 ...
+  [list output truncated]
 \end{Soutput}
 \end{Schunk}
 As a result, we get the list with the following elements:
@@ -654,60 +586,19 @@ As a result, we get the list with the following elements:
 +    test_results <- gset_with_values[[i]]$vals > quant
 +    gset_with_values[[i]]$test <- test_results
 + }
-> str(gset_with_values)
+> str(gset_with_values, max.level = 2, vec.len = 2, list.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 10
  $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -2.15 -2.71 -2.56 -1.95 1.61 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
+  ..$ u   : num [1:140] 0.0292 0.0511 ...
+  ..$ h   : num [1:140] 0.0255 0.0255 ...
+  .. [list output truncated]
  $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -2.04 -0.25 1.97 2.66 1.74 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE TRUE FALSE TRUE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -1.427 -0.174 2.168 3.389 5.821 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE TRUE TRUE TRUE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -2.632 -2.371 -2.073 -2.521 0.363 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -2.31 -2.28 -1.84 -1.68 -1.5 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -1.881 -0.634 1.339 2.413 4.709 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE TRUE TRUE TRUE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -1.977 -1.104 -0.561 -0.827 -2.728 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -1.36714 -1.02287 -0.33388 -0.00825 1.66979 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -2.731 -1.884 -0.101 0.822 1.676 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE TRUE ...
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  ..$ vals: num [1:140] -1.82 -1.51 -1.26 -1.1 0.43 ...
-  ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
+  ..$ u   : num [1:140] 0.0292 0.0511 ...
+  ..$ h   : num [1:140] 0.0255 0.0255 ...
+  .. [list output truncated]
+  [list output truncated]
 \end{Soutput}
 \end{Schunk}
 Now each dataframe from \verb|gset_with_values| contains additional column that is either \verb|TRUE| if we reject the respective null hypothesis $H_0^{(i, j, k)}$ or \verb|FALSE| if we do not reject. We can use these dataframes to produce the plots for illustrating the results.
@@ -724,76 +615,17 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 \end{Sinput}
 \begin{Soutput}
 We reject H_0 with probability 0.05 . Psihat_statistic =  15.45687 .
- Number of pairwise rejections =  10 out of  10 . Gaussian quantile value =  2.229358 
+ Number of pairwise rejections =  10 out of  10 .
+ Gaussian quantile value =  2.222393 
 \end{Soutput}
 \begin{Sinput}
-> str(results)
+> str(results, max.level = 3, vec.len = 2, list.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 5
- $ quant           : num 2.23
+ $ quant           : num 2.22
  $ stat            : num 15.5
- $ stat_pairwise   : num [1:5, 1:5] 0 0 0 0 0 ...
- $ ijset           :'data.frame':	10 obs. of  2 variables:
-  ..$ i: int [1:10] 1 1 2 1 2 3 1 2 3 4
-  ..$ j: int [1:10] 2 3 3 4 4 4 5 5 5 5
-  ..- attr(*, "out.attrs")=List of 2
-  .. ..$ dim     : Named int [1:2] 5 5
-  .. .. ..- attr(*, "names")= chr [1:2] "i" "j"
-  .. ..$ dimnames:List of 2
-  .. .. ..$ i: chr [1:5] "i=1" "i=2" "i=3" "i=4" ...
-  .. .. ..$ j: chr [1:5] "j=1" "j=2" "j=3" "j=4" ...
- $ gset_with_values:List of 10
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.15 -2.71 -2.56 -1.95 1.61 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.04 -0.25 1.97 2.66 1.74 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE TRUE FALSE TRUE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.427 -0.174 2.168 3.389 5.821 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE TRUE TRUE TRUE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.632 -2.371 -2.073 -2.521 0.363 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.31 -2.28 -1.84 -1.68 -1.5 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.881 -0.634 1.339 2.413 4.709 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE TRUE TRUE TRUE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.977 -1.104 -0.561 -0.827 -2.728 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.36714 -1.02287 -0.33388 -0.00825 1.66979 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -2.731 -1.884 -0.101 0.822 1.676 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE TRUE ...
-  ..$ :'data.frame':	140 obs. of  4 variables:
-  .. ..$ u   : num [1:140] 0.0292 0.0511 0.0803 0.1022 0.1314 ...
-  .. ..$ h   : num [1:140] 0.0255 0.0255 0.0255 0.0255 0.0255 ...
-  .. ..$ vals: num [1:140] -1.82 -1.51 -1.26 -1.1 0.43 ...
-  .. ..$ test: logi [1:140] FALSE FALSE FALSE FALSE FALSE FALSE ...
+  [list output truncated]
 \end{Soutput}
 \end{Schunk}
 
@@ -807,7 +639,8 @@ First, we plot the the observed time series for the two countries.
 +                         max(covid[, 1], covid[, 2])),
 +      type="l", col="blue", ylab="", xlab="", mgp=c(1, 0.5, 0))
 > lines(covid[, 2], col="red")
-> title(main = "(a) observed new cases per day", font.main = 1, line = 0.5)
+> title(main = "(a) observed new cases per day", font.main = 1,
++       line = 0.5)
 > legend("topright", inset = 0.02, legend=c("Germany", "UK"),
 +        col = c("blue", "red"), lty = 1, cex = 0.95, ncol = 1)
 \end{Sinput}
@@ -816,7 +649,7 @@ First, we plot the the observed time series for the two countries.
 Now we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the two trend functions $\lambda_1$ and $\lambda_2$, where the bandwidth is set to $7$ days and a rectangular kernel is used. This is not necessary but sometimes useful.
 \begin{Schunk}
 \begin{Sinput}
-> nadaraya_watson_smoothing <- function(u, data_p, grid_p, bw){
+> smoothing <- function(u, data_p, grid_p, bw){
 +   result      = 0
 +   norm        = 0
 +   T_size      = length(data_p)
@@ -825,16 +658,17 @@ Now we plot the smoothed versions of the time series from (a), that is, the plot
 +   return(result/norm)
 + }
 > grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
-> smoothed_1  <- mapply(nadaraya_watson_smoothing, grid_points,
+> smoothed_1  <- mapply(smoothing, grid_points,
 +                       MoreArgs = list(covid[, 1], grid_points,
 +                                       bw = 3.5 / t_len))
-> smoothed_2  <- mapply(nadaraya_watson_smoothing, grid_points,
+> smoothed_2  <- mapply(smoothing, grid_points,
 +                       MoreArgs = list(covid[, 2], grid_points, 
 +                                       bw = 3.5 / t_len))
 > plot(smoothed_1, ylim=c(min(covid[, 1], covid[, 2]),
 +                         max(covid[, 1], covid[, 2])), 
 +      type="l", col="blue", ylab="", xlab = "", mgp=c(1,0.5,0))
-> title(main = "(b) smoothed curves from (a)", font.main = 1, line = 0.5)
+> title(main = "(b) smoothed curves from (a)", font.main = 1,
++       line = 0.5)
 > lines(smoothed_2, col="red")
 \end{Sinput}
 \end{Schunk}
@@ -848,12 +682,12 @@ According to theoretical results in this paper, we can make the following simult
 > l <- 1 #First comparison in ijset
 > gset       <- results$gset_with_values[[l]]
 > reject     <- subset(gset, test == TRUE, select = c(u, h))
-> reject_set <- data.frame('startpoint' = (reject$u - reject$h) * t_len,
-+                          'endpoint' = (reject$u + reject$h) * t_len,
-+                          'values' = 0)
+> reject_set <- data.frame('startpoint' = (reject$u - reject$h) *
++                            t_len,
++                          'endpoint' = (reject$u + reject$h) *
++                            t_len, 'values' = 0)
 > reject_set$values <- (1:nrow(reject_set)) / nrow(reject_set)
-> #Produce minimal intervals
-> reject_min  <- compute_minimal_intervals(reject_set)
+> reject_min        <- compute_minimal_intervals(reject_set)
 > plot(NA, xlim=c(0, t_len),  ylim = c(0, 1 + 1 / nrow(reject_set)),
 +      xlab="", mgp=c(2, 0.5, 0), yaxt = "n", ylab = "")
 > title(main = "(c) minimal intervals produced by our test",
