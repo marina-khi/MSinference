@@ -3,7 +3,7 @@
 \name{ar_coef}
 \alias{ar_coef}
 \title{Computes estimator of the AR(p) coefficients by the procedure from
-Khismatullina and Vogt (2019).}
+Khismatullina and Vogt (2020a).}
 \usage{
 ar_coef(data, l1, l2, correct, p)
 }
@@ -22,6 +22,6 @@ Vector of length p  of estimated AR coefficients.
 }
 \description{
 Computes estimator of the AR(p) coefficients by the procedure from
-Khismatullina and Vogt (2019).
+Khismatullina and Vogt (2020a).
 }
 \keyword{internal}

@@ -12,7 +12,8 @@ compute_quantiles(
   sigma = 1,
   deriv_order = 0,
   sim_runs = 1000,
-  probs = seq(0.5, 0.995, by = 0.005)
+  probs = seq(0.5, 0.995, by = 0.005),
+  correction = TRUE
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ Default is 1000.}
 \item{probs}{A numeric vector of probability levels \eqn{(1-\alpha)}
 for which the quantiles are computed.
 Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.}
+
+\item{correction}{Logical variable, TRUE (by default) is we are using
+\eqn{a_k} and \eqn{b_k}.}
 }
 \value{
 Matrix with 2 rows where the first row contains

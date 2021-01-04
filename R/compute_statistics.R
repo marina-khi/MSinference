@@ -98,7 +98,8 @@ compute_statistics <- function(data, sigma, n_ts = 1, grid = NULL,
     gset_with_values <- list()
 
     for (i in seq_len(nrow(ijset))) {
-      gset$vals              <- psi_ij$vals_cor_matrix[, i]
+      gset$vals              <- psi_ij$vals_matrix[, i]
+      gset$vals_cor          <- psi_ij$vals_cor_matrix[, i]
       gset_with_values[[i]]  <- gset
     }
 

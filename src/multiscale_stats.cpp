@@ -157,7 +157,8 @@ NumericVector kernel_averages(int t_len, NumericVector gset, NumericVector corre
 // [[Rcpp::export]]
 NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
                                 Rcpp::NumericVector gset, Rcpp::IntegerVector ijset,
-                                double sigma, int deriv_order = 0){
+                                double sigma, int deriv_order = 0,
+                                bool correction = true){
    /* Inputs: 
     t_len       Integer, length of time series
     n_ts        Integer. Number of time series.
@@ -216,6 +217,7 @@ NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
             i = ijset[l] - 1;
             j = ijset[l + n_comparisons] - 1;
             NumericVector result(n);
+            NumericVector result_cor(n);
             for(k = 0; k < n; k++){
                u = gset[k];
                h = gset[k + n];
@@ -226,9 +228,13 @@ NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
                      result_temp += Z(t - 1, i) - Z(t - 1, j);
                   }
                }
-               result[k] = correct_a[k] * (awert(result_temp) / (sqrt(2 * t_len * 2 * h)) - correct_b[k]);
+               result[k] = awert(result_temp) / (sqrt(2 * t_len * 2 * h));
+               result_cor[k] = correct_a[k] * (awert(result_temp) / (sqrt(2 * t_len * 2 * h)) - correct_b[k]);
             }
-            Phi(i, j) = max(result);
+            if (correction)
+               Phi(i, j) = max(result_cor);
+            else
+               Phi(i, j) = max(result);
          }
          Phi_vec[pos] = max(Phi);
       }
@@ -262,12 +268,13 @@ Rcpp::List compute_multiple_statistics(int t_len, int n_ts, Rcpp::NumericMatrix 
    Rcpp::NumericVector correct_b(n);
    Rcpp::NumericVector correct_a(n);
    Rcpp::NumericMatrix stat(n_ts, n_ts);
-   NumericVector vals(2 * n);
+   NumericVector vals(n);
    NumericVector vals_cor(n);
    NumericVector time_series(t_len);
    int i, j, k, l, t;
    int n_comparisons = ijset.length() / 2;
    Rcpp::NumericMatrix vals_cor_mat(n, n_comparisons);
+   Rcpp::NumericMatrix vals_mat(n, n_comparisons);
    double len;
    double u, h, result_temp, weight_norm;
 
@@ -294,13 +301,16 @@ Rcpp::List compute_multiple_statistics(int t_len, int n_ts, Rcpp::NumericMatrix 
                result_temp += data(t-1, i) - data(t-1, j);
                weight_norm += data(t-1, i) + data(t-1, j);
             }
+            vals[k] = awert(result_temp) / (sqrt(weight_norm) * sigma);
             vals_cor[k] = correct_a[k] * (awert(result_temp) / (sqrt(weight_norm) * sigma) - correct_b[k]);
          }
       }
       stat(i, j) = max(vals_cor);
+      vals_mat(_, l) = vals;
       vals_cor_mat(_, l) = vals_cor;
    }
-   return(Rcpp::List::create(Rcpp::Named("vals_cor_matrix") = vals_cor_mat,
+   return(Rcpp::List::create(Rcpp::Named("vals_matrix") = vals_mat,
+                             Rcpp::Named("vals_cor_matrix") = vals_cor_mat,
                              Rcpp::Named("stat") = stat));
 }
 

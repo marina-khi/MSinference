@@ -46,11 +46,11 @@ A difference based estimator for the coefficients and
                  
                  The exact estimation procedure as well as description of 
                  the tuning parameters needed for this estimation can be found
-                 in Khismatullina and Vogt (2019).
+                 in Khismatullina and Vogt (2020).
 }
 \references{
 Khismatullina M., Vogt M. Multiscale inference and long-run
             variance estimation in non-parametric regression with
             time series errors //Journal of the Royal Statistical Society:
-            Series B (Statistical Methodology). - 2019.
+            Series B (Statistical Methodology). - 2020.
 }

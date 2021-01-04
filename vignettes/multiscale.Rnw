@@ -16,7 +16,6 @@
 \author{Marina Khismatullina \and Michael Vogt}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 
 \maketitle
 

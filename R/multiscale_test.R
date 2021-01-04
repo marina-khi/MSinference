@@ -28,6 +28,8 @@
 #' @param deriv_order  In case of a single time series, this denotes the order of
 #'                     the derivative of the trend that we estimate.
 #'                     Default is 0.
+#' @param correction   Logical variable, TRUE (by default) is we are using
+#'                     \eqn{a_k} and \eqn{b_k}.
 #' @export
 #'
 #' @return In case of n_ts = 1, the function returns a list
@@ -76,7 +78,7 @@
 #'                         with the corresponding location and bandwidth.}
 multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
                             ijset = NULL, alpha = 0.05, sim_runs = 1000,
-                            deriv_order = 0) {
+                            deriv_order = 0, correction = TRUE) {
 
   if (n_ts == 1) {
     t_len <- length(data)
@@ -108,7 +110,8 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
   quantiles <- compute_quantiles(t_len = t_len, grid = grid, n_ts = n_ts,
                                  ijset = ijset, sigma = sigma,
                                  sim_runs = sim_runs,
-                                 deriv_order = deriv_order)
+                                 deriv_order = deriv_order,
+                                 correction = correction)
 
   probs <- as.vector(quantiles$quant[1, ])
   quant <- as.vector(quantiles$quant[2, ])
@@ -161,7 +164,11 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
     gset_with_values <- psi$gset_with_values
 
     for (i in seq_len(nrow(ijset))) {
-      test_results               <- gset_with_values[[i]]$vals > quant
+      if (correction) {
+        test_results               <- gset_with_values[[i]]$vals_cor > quant
+      } else {
+        test_results               <- gset_with_values[[i]]$vals > quant
+      }
       gset_with_values[[i]]$test <- test_results
     }
 

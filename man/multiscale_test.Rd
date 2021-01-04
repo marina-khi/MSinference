@@ -13,7 +13,8 @@ multiscale_test(
   ijset = NULL,
   alpha = 0.05,
   sim_runs = 1000,
-  deriv_order = 0
+  deriv_order = 0,
+  correction = TRUE
 )
 }
 \arguments{
@@ -51,6 +52,9 @@ Default is 1000.}
 \item{deriv_order}{In case of a single time series, this denotes the order of
 the derivative of the trend that we estimate.
 Default is 0.}
+
+\item{correction}{Logical variable, TRUE (by default) is we are using
+\eqn{a_k} and \eqn{b_k}.}
 }
 \value{
 In case of n_ts = 1, the function returns a list
