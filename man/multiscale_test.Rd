@@ -7,14 +7,16 @@ long-run variance have already been computed.}
 \usage{
 multiscale_test(
   data,
-  sigma,
+  sigma = 1,
+  sigma_vec = 1,
   n_ts = 1,
   grid = NULL,
   ijset = NULL,
   alpha = 0.05,
   sim_runs = 1000,
   deriv_order = 0,
-  correction = TRUE
+  correction = TRUE,
+  epidem = FALSE
 )
 }
 \arguments{
@@ -26,7 +28,11 @@ each column of the matrix must contain one time series.}
 \item{sigma}{The estimator of the square root of the long-run
 variance \eqn{\sigma} in case of n_ts = 1,
 or the estimator of the overdispersion parameter
-\eqn{\sigma} in case of n_ts > 1.}
+\eqn{\sigma} in case of n_ts > 1 and epidemic = TRUE.}
+
+\item{sigma_vec}{Vector that consists of estimators of the square root
+of the long-run variances \eqn{\sigma_i} in case of
+n_ts > 1 and epidemic = FALSE.}
 
 \item{n_ts}{Number of time series analysed. Default is 1.}
 
@@ -55,6 +61,9 @@ Default is 0.}
 
 \item{correction}{Logical variable, TRUE (by default) is we are using
 \eqn{a_k} and \eqn{b_k}.}
+
+\item{epidem}{Logical variable, TRUE if we are using
+dealing with epidemic time trends. Default is FALSE.}
 }
 \value{
 In case of n_ts = 1, the function returns a list

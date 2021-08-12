@@ -30,8 +30,10 @@
 #' @param probs        A numeric vector of probability levels \eqn{(1-\alpha)}
 #'                     for which the quantiles are computed.
 #'                     Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.
-#' @param correction   Logical variable, TRUE (by default) is we are using
+#' @param correction   Logical variable, TRUE (by default) if we are using
 #'                     \eqn{a_k} and \eqn{b_k}.
+#' @param epidem       Logical variable, TRUE if we are using
+#'                     dealing with epidemic time trends. Default is FALSE.
 #'
 #' @return             Matrix with 2 rows where the first row contains
 #'                     the vector of probabilities (probs) and the second
@@ -46,7 +48,7 @@ compute_quantiles <- function(t_len, n_ts = 1, grid = NULL,
                               ijset = NULL, sigma = 1,
                               deriv_order = 0, sim_runs=1000,
                               probs=seq(0.5, 0.995, by = 0.005),
-                              correction = TRUE) {
+                              correction = TRUE, epidem = FALSE) {
 
   if (is.null(grid)) {
     grid <- construct_grid(t_len)
@@ -71,7 +73,7 @@ compute_quantiles <- function(t_len, n_ts = 1, grid = NULL,
   phi <- simulate_gaussian(t_len = t_len, n_ts = n_ts, sim_runs = sim_runs,
                            gset = gset_cpp, ijset = ijset_cpp,
                            sigma = sigma, deriv_order = deriv_order,
-                           correction = correction)
+                           correction = correction, epidem = epidem)
   quant  <- as.vector(quantile(phi, probs = probs))
   quant  <- rbind(probs, quant)
 

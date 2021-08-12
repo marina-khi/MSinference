@@ -245,7 +245,7 @@ title(main = "(b) smoothed time series for different bandwidths",
 Finally, we present the results produced by our test. Specifically, we depict in grey the set $\Pi^{+}_T$ which is the collection of time intervals $I_{(u,h)} = [u - h, u + h] \in [0, 1]$ for which our test rejects $H_0(u,h)$ and indicates an increase in the trend function. Furthermore, we depict in black the set of minimal intervals $\Pi^{+, \min}_T$ The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020a}. The function in the package that calculates the minimal intervals is \verb|compute_minimal_intervals()|.
 
 
-According to theoretical results in \cite{KhismatullinaVogt2002a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
+According to theoretical results in \cite{KhismatullinaVogt2020a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
 
 <<>>=
 gset   <- results$gset_with_vals
@@ -377,7 +377,7 @@ segments(intervals$left * t_len, intervals$v,
 
 With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$. 
 
-Now we are ready to perfrom the test.
+Now we are ready to perform the test.
 \begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
   \item Compute the quantile $q_{T,\text{Gauss}}(\alpha)$ by Monte Carlo simulations. Specifically, draw a large number $\verb|sim_runs| = 5000$ samples of independent standard normal random variables $\{Z_{it}^{(\ell)} : 1 \le i \le n, \, 1 \le t \le T \}$ for $1 \le \ell \le \verb|sim_runs|$. Compute the value $\Phi_T^{(\ell)}$ of the Gaussian statistic $\Phi_T$ for each sample $\ell$ by the following formula:
 \begin{align*}
@@ -395,7 +395,7 @@ This step is done with these lines of code:
 quantiles <- compute_quantiles(t_len = t_len, grid = grid,
                                n_ts = n, ijset = ijset,
                                sigma = sigmahat,
-                               sim_runs = sim_runs)
+                               sim_runs = sim_runs, epidem = TRUE)
 
 probs <- as.vector(quantiles$quant[1, ])
 pos   <- which.min(abs(probs - (1 - alpha)))
@@ -413,7 +413,7 @@ This step is done with these lines of code:
 
 <<>>=
 result <- compute_statistics(data = covid, sigma = sigmahat,
-                             n_ts = n, grid = grid)
+                             n_ts = n, grid = grid, epidem = TRUE)
 str(result, max.level = 3, vec.len = 2, list.len = 2)
 @
 As a result, we get the list with the following elements:
@@ -443,7 +443,7 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 results <- multiscale_test(data = covid, sigma = sigmahat,
                            n_ts = n, grid = grid, ijset = ijset,
                            alpha = alpha,
-                           sim_runs = sim_runs)
+                           sim_runs = sim_runs, epidem = TRUE)
 str(results, max.level = 3, vec.len = 2, list.len = 2)
 @
 

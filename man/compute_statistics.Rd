@@ -7,11 +7,13 @@ analysis and multiple time series analysis.}
 \usage{
 compute_statistics(
   data,
-  sigma,
+  sigma = 1,
+  sigma_vec = 1,
   n_ts = 1,
   grid = NULL,
   ijset = NULL,
-  deriv_order = 0
+  deriv_order = 0,
+  epidem = FALSE
 )
 }
 \arguments{
@@ -23,7 +25,11 @@ each column of the matrix must contain one time series.}
 \item{sigma}{The estimator of the square root of the long-run
 variance \eqn{\sigma} in case of n_ts = 1,
 or the estimator of the overdispersion parameter
-\eqn{\sigma} in case of n_ts > 1.}
+\eqn{\sigma} in case of n_ts > 1 and epidemic = TRUE.}
+
+\item{sigma_vec}{Vector that consists of estimators of the square root
+of the long-run variances \eqn{\sigma_i} in case of
+n_ts > 1 and epidemic = FALSE.}
 
 \item{n_ts}{Number of time series analysed. Default is 1.}
 
@@ -44,6 +50,9 @@ possible pairwise comparison are performed.}
 \item{deriv_order}{In case of a single time series, this denotes the order of
 the derivative of the trend that we estimate.
 Default is 0.}
+
+\item{epidem}{Logical variable, TRUE if we are using
+dealing with epidemic time trends. Default is FALSE.}
 }
 \value{
 In case of n_ts = 1, the function returns a list

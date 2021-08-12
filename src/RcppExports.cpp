@@ -5,9 +5,14 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // simulate_gaussian
-NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma, int deriv_order, bool correction);
-RcppExport SEXP _multiscale_simulate_gaussian(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP sim_runsSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigmaSEXP, SEXP deriv_orderSEXP, SEXP correctionSEXP) {
+NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma, int deriv_order, bool correction, bool epidem);
+RcppExport SEXP _multiscale_simulate_gaussian(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP sim_runsSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigmaSEXP, SEXP deriv_orderSEXP, SEXP correctionSEXP, SEXP epidemSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,7 +24,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< int >::type deriv_order(deriv_orderSEXP);
     Rcpp::traits::input_parameter< bool >::type correction(correctionSEXP);
-    rcpp_result_gen = Rcpp::wrap(simulate_gaussian(t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order, correction));
+    Rcpp::traits::input_parameter< bool >::type epidem(epidemSEXP);
+    rcpp_result_gen = Rcpp::wrap(simulate_gaussian(t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order, correction, epidem));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -36,6 +42,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ijset(ijsetSEXP);
     Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(compute_multiple_statistics(t_len, n_ts, data, gset, ijset, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// compute_multiple_statistics_2
+Rcpp::List compute_multiple_statistics_2(int t_len, int n_ts, Rcpp::NumericMatrix data, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, Rcpp::NumericVector sigma_vec);
+RcppExport SEXP _multiscale_compute_multiple_statistics_2(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP dataSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigma_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type t_len(t_lenSEXP);
+    Rcpp::traits::input_parameter< int >::type n_ts(n_tsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type gset(gsetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ijset(ijsetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type sigma_vec(sigma_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(compute_multiple_statistics_2(t_len, n_ts, data, gset, ijset, sigma_vec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -56,8 +78,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_multiscale_simulate_gaussian", (DL_FUNC) &_multiscale_simulate_gaussian, 8},
+    {"_multiscale_simulate_gaussian", (DL_FUNC) &_multiscale_simulate_gaussian, 9},
     {"_multiscale_compute_multiple_statistics", (DL_FUNC) &_multiscale_compute_multiple_statistics, 6},
+    {"_multiscale_compute_multiple_statistics_2", (DL_FUNC) &_multiscale_compute_multiple_statistics_2, 6},
     {"_multiscale_compute_single_statistics", (DL_FUNC) &_multiscale_compute_single_statistics, 5},
     {NULL, NULL, 0}
 };

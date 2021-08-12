@@ -13,7 +13,8 @@ compute_quantiles(
   deriv_order = 0,
   sim_runs = 1000,
   probs = seq(0.5, 0.995, by = 0.005),
-  correction = TRUE
+  correction = TRUE,
+  epidem = FALSE
 )
 }
 \arguments{
@@ -52,8 +53,11 @@ Default is 1000.}
 for which the quantiles are computed.
 Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.}
 
-\item{correction}{Logical variable, TRUE (by default) is we are using
+\item{correction}{Logical variable, TRUE (by default) if we are using
 \eqn{a_k} and \eqn{b_k}.}
+
+\item{epidem}{Logical variable, TRUE if we are using
+dealing with epidemic time trends. Default is FALSE.}
 }
 \value{
 Matrix with 2 rows where the first row contains

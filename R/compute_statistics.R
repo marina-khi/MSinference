@@ -9,7 +9,10 @@
 #' @param sigma        The estimator of the square root of the long-run
 #'                     variance \eqn{\sigma} in case of n_ts = 1,
 #'                     or the estimator of the overdispersion parameter
-#'                     \eqn{\sigma} in case of n_ts > 1.
+#'                     \eqn{\sigma} in case of n_ts > 1 and epidemic = TRUE.
+#' @param sigma_vec    Vector that consists of estimators of the square root
+#'                     of the long-run variances \eqn{\sigma_i} in case of
+#'                     n_ts > 1 and epidemic = FALSE.
 #' @param grid         Grid of location-bandwidth points as produced by
 #'                     the functions \code{\link{construct_grid}} or
 #'                     \code{\link{construct_weekly_grid}}, it is a list with
@@ -25,6 +28,9 @@
 #' @param deriv_order  In case of a single time series, this denotes the order of
 #'                     the derivative of the trend that we estimate.
 #'                     Default is 0.
+#' @param epidem       Logical variable, TRUE if we are using
+#'                     dealing with epidemic time trends. Default is FALSE.
+
 #' @export
 #'
 #' @return In case of n_ts = 1, the function returns a list
@@ -48,8 +54,9 @@
 #'                         the values of the normalisedkernel averages
 #'                         for each pair of location-bandwidth
 #'                         with the corresponding location and bandwidth.}
-compute_statistics <- function(data, sigma, n_ts = 1, grid = NULL,
-                            ijset = NULL, deriv_order = 0) {
+compute_statistics <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, 
+                               grid = NULL, ijset = NULL, deriv_order = 0,
+                               epidem = FALSE) {
 
   if (n_ts == 1) {
     t_len <- length(data)
@@ -90,10 +97,19 @@ compute_statistics <- function(data, sigma, n_ts = 1, grid = NULL,
     ijset_cpp               <- as.vector(ijset_cpp)
     storage.mode(ijset_cpp) <- "integer"
 
-    psi_ij <- compute_multiple_statistics(t_len = t_len, n_ts = n_ts,
-                                          data = data, gset = gset_cpp,
-                                          ijset = ijset_cpp,
-                                          sigma = sigma)
+    if (epidem) {
+      psi_ij <- compute_multiple_statistics(t_len = t_len, n_ts = n_ts,
+                                            data = data, gset = gset_cpp,
+                                            ijset = ijset_cpp,
+                                            sigma = sigma)
+    } else {
+      sigma_vec               <- as.vector(sigma_vec)
+      storage.mode(sigma_vec) <- "double"
+      psi_ij <- compute_multiple_statistics_2(t_len = t_len, n_ts = n_ts,
+                                              data = data, gset = gset_cpp,
+                                              ijset = ijset_cpp,
+                                              sigma_vec = sigma_vec)
+    }
     stat_max <- max(psi_ij$stat, na.rm = TRUE)
     gset_with_values <- list()
 

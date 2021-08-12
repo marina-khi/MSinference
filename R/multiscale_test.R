@@ -9,7 +9,10 @@
 #' @param sigma        The estimator of the square root of the long-run
 #'                     variance \eqn{\sigma} in case of n_ts = 1,
 #'                     or the estimator of the overdispersion parameter
-#'                     \eqn{\sigma} in case of n_ts > 1.
+#'                     \eqn{\sigma} in case of n_ts > 1 and epidemic = TRUE.
+#' @param sigma_vec    Vector that consists of estimators of the square root
+#'                     of the long-run variances \eqn{\sigma_i} in case of
+#'                     n_ts > 1 and epidemic = FALSE.
 #' @param grid         Grid of location-bandwidth points as produced by
 #'                     the functions \code{\link{construct_grid}} or
 #'                     \code{\link{construct_weekly_grid}}, it is a list with
@@ -30,6 +33,9 @@
 #'                     Default is 0.
 #' @param correction   Logical variable, TRUE (by default) is we are using
 #'                     \eqn{a_k} and \eqn{b_k}.
+#' @param epidem       Logical variable, TRUE if we are using
+#'                     dealing with epidemic time trends. Default is FALSE.
+#'                     
 #' @export
 #'
 #' @return In case of n_ts = 1, the function returns a list
@@ -76,9 +82,10 @@
 #'                         the values of the normalisedkernel averages
 #'                         for each pair of location-bandwidth
 #'                         with the corresponding location and bandwidth.}
-multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
+multiscale_test <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, grid = NULL,
                             ijset = NULL, alpha = 0.05, sim_runs = 1000,
-                            deriv_order = 0, correction = TRUE) {
+                            deriv_order = 0, correction = TRUE,
+                            epidem = FALSE) {
 
   if (n_ts == 1) {
     t_len <- length(data)
@@ -111,7 +118,7 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
                                  ijset = ijset, sigma = sigma,
                                  sim_runs = sim_runs,
                                  deriv_order = deriv_order,
-                                 correction = correction)
+                                 correction = correction, epidem = epidem)
 
   probs <- as.vector(quantiles$quant[1, ])
   quant <- as.vector(quantiles$quant[2, ])
@@ -123,8 +130,10 @@ multiscale_test <- function(data, sigma, n_ts = 1, grid = NULL,
 
   quant <- quant[pos]
 
-  psi   <- compute_statistics(data = data, sigma = sigma, n_ts = n_ts,
-                              grid = grid, deriv_order = deriv_order)
+  psi   <- compute_statistics(data = data, sigma = sigma, 
+                              sigma_vec = sigma_vec, n_ts = n_ts,
+                              grid = grid, deriv_order = deriv_order,
+                              epidem = epidem)
   stat  <- psi$stat
 
   if (n_ts == 1) {
