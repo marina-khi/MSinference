@@ -244,7 +244,7 @@ NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
                Rcpp::NumericVector result_temp(2 * n);
                result_temp = kernel_averages(t_len, gset, correct_b, data_temp, sqrt(2), n, 0);
                result = result_temp[Rcpp::Range(0, n - 1)];
-               result_cor = result[Rcpp::Range(n, 2 * n - 1)];
+               result_cor = result_temp[Rcpp::Range(n, 2 * n - 1)];
             }
             if (correction)
                Phi(i, j) = max(result_cor);
