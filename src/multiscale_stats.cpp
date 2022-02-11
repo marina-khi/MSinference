@@ -39,9 +39,9 @@ double s_t_0(double u, double h, int t_len){
 
    result = 0.0;
 
-   t_min = (int)(floor((u - h) * (float)t_len));      
+   t_min = (int)(ceil((u - h) * (float)t_len));      
    if(t_min < 1) t_min = 1;
-   t_max = (int)(ceil((u + h) * (float)t_len));      
+   t_max = (int)(floor((u + h) * (float)t_len));      
    if(t_max > t_len) t_max = t_len;
 
    for(t = t_min; t < (t_max+1); t++){
@@ -61,9 +61,9 @@ double s_t_1(double u, double h, int t_len){
 
    result = 0.0;
 
-   t_min = (int)(floor((u - h) * (float)t_len));      
+   t_min = (int)(ceil((u - h) * (float)t_len));      
    if(t_min < 1) t_min = 1;
-   t_max = (int)(ceil((u + h) * (float)t_len));      
+   t_max = (int)(floor((u + h) * (float)t_len));      
    if(t_max > t_len) t_max = t_len;
 
    for(t = t_min; t < (t_max+1); t++){
@@ -82,9 +82,9 @@ double s_t_2(double u, double h, int t_len){
    
    result = 0.0;
    
-   t_min = (int)(floor((u - h) * (float)t_len));      
+   t_min = (int)(ceil((u - h) * (float)t_len));      
    if(t_min < 1) t_min = 1;
-   t_max = (int)(ceil((u + h) * (float)t_len));      
+   t_max = (int)(floor((u + h) * (float)t_len));      
    if(t_max > t_len) t_max = t_len;
    
    for(t = t_min; t < (t_max+1); t++){
@@ -121,9 +121,9 @@ NumericVector kernel_averages(int t_len, NumericVector gset, NumericVector corre
    for(i = 0; i < n; i++){
       u = gset[i];
       h = gset[i + n];
-      t_min = (int)(floor((u - h) * (float)t_len));      
+      t_min = (int)(ceil((u - h) * (float)t_len));      
       if(t_min < 1) t_min = 1;
-      t_max = (int)(ceil((u + h) * (float)t_len));      
+      t_max = (int)(floor((u + h) * (float)t_len));      
       if(t_max > t_len) t_max = t_len;
 
       result_temp = 0;
