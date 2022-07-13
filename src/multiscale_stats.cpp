@@ -258,6 +258,109 @@ NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
 }
 
 // [[Rcpp::export]]
+NumericVector simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset,
+                                  Rcpp::IntegerVector ijset, double sigma = 1,
+                                  int deriv_order = 0, bool correction = true,
+                                  bool epidem = false){
+   /* Inputs: 
+    t_len       Integer, length of time series
+    n_ts        Integer. Number of time series.
+    gset        A double vector of location-bandwidth points
+                (u_1,...,u_n,h_1,...h_n).
+    ijset       An integer vector of indices of the countries for the comparison
+                (i_1, i_2, ..., j_{n_comparisons}).
+    sigma       A double that is equal to sqrt{long-run varaince}
+                in case of n_ts = 1, or the overdispersion in case of
+                n_ts > 1. If not given, then the default is 1.
+    deriv_order Integer. Order of the derivative of the trend that is investigated.
+    Default is 0 => we analyse whether the trend itself >< than 0.
+    correction  Boolean variable, true if we adjust the critical values
+    in order to balance the significance of different hypotheses
+    epidem      Boolean variable, true if we are working with epidemic time trends. Default is TRUE. 
+    
+    Output:
+    Phi_vec     A double vector of length sim_runs that consists of the calculated
+    Gaussian statistic for each simulation run.
+    */
+   
+   int n = gset.length() / 2;
+   double Phi;
+   Rcpp::NumericVector correct_a(n);
+   Rcpp::NumericVector correct_b(n);
+   NumericVector vals(2 * n);
+   NumericVector vals_cor(n);
+   int i, j, k, t, l, n_comparisons;
+   double u, h, len, result_temp;
+   
+   for (k = 0; k < n; k++){
+      len = 2 * gset[k + n];
+      /* Here we need the whole length of the interval! */
+      correct_b[k] = sqrt(2 * log(1 / len));
+      correct_a[k] = sqrt(log(exp(1) / len)) / log(log(exp(exp(1)) / len));
+   }
+   
+   if (n_ts == 1){
+      NumericVector Z(t_len);
+      Z = rnorm(t_len);
+      NumericVector data_(t_len);
+      data_ = sigma * Z;
+      vals = kernel_averages(t_len, gset, correct_b, data_, sigma, n, deriv_order);
+      vals_cor = vals[Rcpp::Range(n, 2 * n - 1)];
+      if (correction)
+         Phi = max(vals_cor);
+      else
+         Phi = max(vals[Rcpp::Range(0, n - 1)]);
+      }
+   } else {
+      NumericMatrix Phi_mat(n_ts, n_ts);      
+      n_comparisons = ijset.length() / 2;
+      
+      NumericMatrix Z(t_len, n_ts);
+      for (i = 0; i < n_ts; i++) {
+         Z(_, i) = rnorm(t_len);
+      }
+      for (l = 0; l < n_comparisons; l++) {
+         i = ijset[l] - 1;
+         j = ijset[l + n_comparisons] - 1;
+         NumericVector result(n);
+         NumericVector result_cor(n);
+         if (epidem) {
+            for(k = 0; k < n; k++){
+               u = gset[k];
+               h = gset[k + n];
+               result_temp = 0;
+               for(t = 1; t < (t_len + 1); t++){
+                  if (t / (float)t_len >= (u - h) && t / (float)t_len <= (u + h)){
+                     result_temp += Z(t - 1, i) - Z(t - 1, j);
+                  }
+               }
+               result[k] = awert(result_temp) / (sqrt(2 * t_len * 2 * h));
+               result_cor[k] = correct_a[k] * (awert(result_temp) / (sqrt(2 * t_len * 2 * h)) - correct_b[k]);
+            }
+         }
+         else {
+            NumericVector data_temp(t_len);
+            double z_i_mean, z_j_mean;
+            z_i_mean = mean(Z(_, i));
+            z_j_mean = mean(Z(_, j));
+            data_temp = (Z(_, i) - z_i_mean) - (Z(_, j) - z_j_mean);
+            Rcpp::NumericVector result_temp(2 * n);
+            result_temp = kernel_averages(t_len, gset, correct_b, data_temp, sqrt(2), n, 0);
+            result = result_temp[Rcpp::Range(0, n - 1)];
+            result_cor = result_temp[Rcpp::Range(n, 2 * n - 1)];
+         }
+         if (correction)
+            Phi_mat(i, j) = max(result_cor);
+         else
+            Phi_mat(i, j) = max(result);
+      }
+      Phi = max(Phi_mat);
+   }
+   return(Phi);
+}
+
+
+// [[Rcpp::export]]
 Rcpp::List compute_multiple_statistics(int t_len, int n_ts, Rcpp::NumericMatrix data,
                                        Rcpp::NumericVector gset, Rcpp::IntegerVector ijset,
                                        double sigma){

@@ -1,6 +1,7 @@
 useDynLib(multiscale, .registration=TRUE)
 export(compute_minimal_intervals,
        compute_quantiles,
+       compute_quantiles_2,
        compute_statistics,
        construct_grid,
        construct_weekly_grid,
@@ -9,6 +10,8 @@ export(compute_minimal_intervals,
        plot_sizer_map,
        select_order)
 importFrom(Rcpp, evalCpp)
+importFrom(foreach)
+importFrom(parallel, doParallel)
 importFrom('graphics', 'image')
 importFrom('stats', 'quantile')
 importFrom(Rdpack, reprompt)

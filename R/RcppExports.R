@@ -5,6 +5,10 @@ simulate_gaussian <- function(t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_o
     .Call(`_multiscale_simulate_gaussian`, t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order, correction, epidem)
 }
 
+simulate_gaussian_2 <- function(t_len, n_ts, gset, ijset, sigma = 1, deriv_order = 0L, correction = TRUE, epidem = FALSE) {
+    .Call(`_multiscale_simulate_gaussian_2`, t_len, n_ts, gset, ijset, sigma, deriv_order, correction, epidem)
+}
+
 compute_multiple_statistics <- function(t_len, n_ts, data, gset, ijset, sigma) {
     .Call(`_multiscale_compute_multiple_statistics`, t_len, n_ts, data, gset, ijset, sigma)
 }
