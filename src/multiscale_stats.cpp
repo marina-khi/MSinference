@@ -258,10 +258,10 @@ NumericVector simulate_gaussian(int t_len, int n_ts, int sim_runs,
 }
 
 // [[Rcpp::export]]
-NumericVector simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset,
-                                  Rcpp::IntegerVector ijset, double sigma = 1,
-                                  int deriv_order = 0, bool correction = true,
-                                  bool epidem = false){
+double simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset,
+                           Rcpp::IntegerVector ijset, double sigma = 1,
+                           int deriv_order = 0, bool correction = true,
+                           bool epidem = false){
    /* Inputs: 
     t_len       Integer, length of time series
     n_ts        Integer. Number of time series.
@@ -310,7 +310,6 @@ NumericVector simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset,
          Phi = max(vals_cor);
       else
          Phi = max(vals[Rcpp::Range(0, n - 1)]);
-      }
    } else {
       NumericMatrix Phi_mat(n_ts, n_ts);      
       n_comparisons = ijset.length() / 2;
