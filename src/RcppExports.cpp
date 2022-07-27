@@ -29,6 +29,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// simulate_gaussian_2
+NumericVector simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma, int deriv_order, bool correction, bool epidem);
+RcppExport SEXP _multiscale_simulate_gaussian_2(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigmaSEXP, SEXP deriv_orderSEXP, SEXP correctionSEXP, SEXP epidemSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type t_len(t_lenSEXP);
+    Rcpp::traits::input_parameter< int >::type n_ts(n_tsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type gset(gsetSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type ijset(ijsetSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< int >::type deriv_order(deriv_orderSEXP);
+    Rcpp::traits::input_parameter< bool >::type correction(correctionSEXP);
+    Rcpp::traits::input_parameter< bool >::type epidem(epidemSEXP);
+    rcpp_result_gen = Rcpp::wrap(simulate_gaussian_2(t_len, n_ts, gset, ijset, sigma, deriv_order, correction, epidem));
+    return rcpp_result_gen;
+END_RCPP
+}
 // compute_multiple_statistics
 Rcpp::List compute_multiple_statistics(int t_len, int n_ts, Rcpp::NumericMatrix data, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma);
 RcppExport SEXP _multiscale_compute_multiple_statistics(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP dataSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigmaSEXP) {
@@ -79,6 +97,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_multiscale_simulate_gaussian", (DL_FUNC) &_multiscale_simulate_gaussian, 9},
+    {"_multiscale_simulate_gaussian_2", (DL_FUNC) &_multiscale_simulate_gaussian_2, 8},
     {"_multiscale_compute_multiple_statistics", (DL_FUNC) &_multiscale_compute_multiple_statistics, 6},
     {"_multiscale_compute_multiple_statistics_2", (DL_FUNC) &_multiscale_compute_multiple_statistics_2, 6},
     {"_multiscale_compute_single_statistics", (DL_FUNC) &_multiscale_compute_single_statistics, 5},
