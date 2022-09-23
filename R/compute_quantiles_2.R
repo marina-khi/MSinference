@@ -50,7 +50,7 @@ compute_quantiles_2 <- function(t_len, n_ts = 1, grid = NULL,
                                 probs = seq(0.5, 0.995, by = 0.005),
                                 correction = TRUE, epidem = FALSE) {
   
-  numCores  <- round(parallel::detectCores() * .70)
+  numCores  <- round(detectCores() * .70)
   
   if (is.null(grid)) {
     grid <- construct_grid(t_len)
@@ -74,7 +74,7 @@ compute_quantiles_2 <- function(t_len, n_ts = 1, grid = NULL,
 
   cl <- makePSOCKcluster(numCores)
   registerDoParallel(cl)
-  foreach (val = 1:n_rep, .combine = "cbind") %dopar% {
+  foreach (val = 1:sim_runs, .combine = "cbind") %dopar% {
     simulate_gaussian_2(t_len = t_len, n_ts = n_ts, 
                         gset = gset_cpp, ijset = ijset_cpp,
                         sigma = sigma, deriv_order = deriv_order,

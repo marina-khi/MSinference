@@ -30,7 +30,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // simulate_gaussian_2
-NumericVector simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma, int deriv_order, bool correction, bool epidem);
+double simulate_gaussian_2(int t_len, int n_ts, Rcpp::NumericVector gset, Rcpp::IntegerVector ijset, double sigma, int deriv_order, bool correction, bool epidem);
 RcppExport SEXP _multiscale_simulate_gaussian_2(SEXP t_lenSEXP, SEXP n_tsSEXP, SEXP gsetSEXP, SEXP ijsetSEXP, SEXP sigmaSEXP, SEXP deriv_orderSEXP, SEXP correctionSEXP, SEXP epidemSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

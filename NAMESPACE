@@ -10,8 +10,9 @@ export(compute_minimal_intervals,
        plot_sizer_map,
        select_order)
 importFrom(Rcpp, evalCpp)
-importFrom(foreach)
-importFrom(parallel, doParallel)
+importFrom(foreach, foreach, '%dopar%')
+importFrom(parallel, detectCores, makePSOCKcluster, stopCluster)
+importFrom(doParallel, registerDoParallel)
 importFrom('graphics', 'image')
 importFrom('stats', 'quantile')
 importFrom(Rdpack, reprompt)
