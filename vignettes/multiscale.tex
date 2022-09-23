@@ -52,7 +52,7 @@ This vignette is organized as follows. Section \ref{sec:single} presents our mut
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
-As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020a}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "multiscale")|.
+As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "multiscale")|.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -166,7 +166,7 @@ This step is done with these lines of code (running this can take a while):
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 1.748363
+[1] 1.859165
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
@@ -251,14 +251,14 @@ All these steps are not necessary for performing the test, they are already inco
 \begin{Soutput}
 For the given time series we reject H_0 with probability 0.05 .
  Psihat_statistic =  3.136008 .
- Gaussian quantile value =  1.390933 
+ Gaussian quantile value =  1.636422 
 \end{Soutput}
 \begin{Sinput}
 > str(results, max.level = 2, vec.len = 2)
 \end{Sinput}
 \begin{Soutput}
 List of 4
- $ quant         : num 1.39
+ $ quant         : num 1.64
  $ stat          : num 3.14
  $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 ...
  $ gset_with_vals:'data.frame':	1136 obs. of  5 variables:
@@ -334,7 +334,7 @@ Then we plot the smoothed versions of the time series from (a), that is, the plo
 Finally, we present the results produced by our test. Specifically, we depict in grey the set $\Pi^{+}_T$ which is the collection of time intervals $I_{(u,h)} = [u - h, u + h] \in [0, 1]$ for which our test rejects $H_0(u,h)$ and indicates an increase in the trend function. Furthermore, we depict in black the set of minimal intervals $\Pi^{+, \min}_T$ The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020a}. The function in the package that calculates the minimal intervals is \verb|compute_minimal_intervals()|.
 
 
-According to theoretical results in \cite{KhismatullinaVogt2002a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
+According to theoretical results in \cite{KhismatullinaVogt2020a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -363,7 +363,7 @@ According to theoretical results in \cite{KhismatullinaVogt2002a}, we can make t
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 
-As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2020b}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
+As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2021}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
 
 \begin{Schunk}
 \begin{Sinput}
@@ -520,7 +520,7 @@ A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 13
 
 With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$. 
 
-Now we are ready to perfrom the test.
+Now we are ready to perform the test.
 \begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
   \item Compute the quantile $q_{T,\text{Gauss}}(\alpha)$ by Monte Carlo simulations. Specifically, draw a large number $\verb|sim_runs| = 5000$ samples of independent standard normal random variables $\{Z_{it}^{(\ell)} : 1 \le i \le n, \, 1 \le t \le T \}$ for $1 \le \ell \le \verb|sim_runs|$. Compute the value $\Phi_T^{(\ell)}$ of the Gaussian statistic $\Phi_T$ for each sample $\ell$ by the following formula:
 \begin{align*}
@@ -539,14 +539,14 @@ This step is done with these lines of code:
 > quantiles <- compute_quantiles(t_len = t_len, grid = grid,
 +                                n_ts = n, ijset = ijset,
 +                                sigma = sigmahat,
-+                                sim_runs = sim_runs)
++                                sim_runs = sim_runs, epidem = TRUE)
 > probs <- as.vector(quantiles$quant[1, ])
 > pos   <- which.min(abs(probs - (1 - alpha)))
 > quant <- quantiles$quant[2, pos]
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.169989
+[1] 2.183388
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -561,7 +561,7 @@ This step is done with these lines of code:
 \begin{Schunk}
 \begin{Sinput}
 > result <- compute_statistics(data = covid, sigma = sigmahat,
-+                              n_ts = n, grid = grid)
++                              n_ts = n, grid = grid, epidem = TRUE)
 > str(result, max.level = 3, vec.len = 2, list.len = 2)
 \end{Sinput}
 \begin{Soutput}
@@ -590,13 +590,13 @@ As a result, we get the list with the following elements:
 \end{Sinput}
 \begin{Soutput}
 List of 10
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 ...
+ $ :'data.frame':	140 obs. of  5 variables:
+  ..$ u       : num [1:140] 0.0292 0.0511 ...
+  ..$ h       : num [1:140] 0.0255 0.0255 ...
   .. [list output truncated]
- $ :'data.frame':	140 obs. of  4 variables:
-  ..$ u   : num [1:140] 0.0292 0.0511 ...
-  ..$ h   : num [1:140] 0.0255 0.0255 ...
+ $ :'data.frame':	140 obs. of  5 variables:
+  ..$ u       : num [1:140] 0.0292 0.0511 ...
+  ..$ h       : num [1:140] 0.0255 0.0255 ...
   .. [list output truncated]
   [list output truncated]
 \end{Soutput}
@@ -611,12 +611,12 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 > results <- multiscale_test(data = covid, sigma = sigmahat,
 +                            n_ts = n, grid = grid, ijset = ijset,
 +                            alpha = alpha,
-+                            sim_runs = sim_runs)
++                            sim_runs = sim_runs, epidem = TRUE)
 \end{Sinput}
 \begin{Soutput}
 We reject H_0 with probability 0.05 . Psihat_statistic =  15.45687 .
  Number of pairwise rejections =  10 out of  10 .
- Gaussian quantile value =  2.222393 
+ Gaussian quantile value =  2.22111 
 \end{Soutput}
 \begin{Sinput}
 > str(results, max.level = 3, vec.len = 2, list.len = 2)
