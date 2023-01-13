@@ -3,6 +3,7 @@ Type: Package
 Title: Multiscale Inference for Nonparametric Time Trend(s)
 Version: 0.0.0.9000
 Date: 2020-05-04
+<<<<<<< HEAD
 Authors@R: c(person("Marina", "Khismatullina", email = "khismatullina@ese.eur.nl",
   role = c("aut", "cre")),
   person("Michael", "Vogt", email = "m.vogt@uni-ulm.de", role = "aut"))
@@ -15,6 +16,18 @@ Description: This package performs a multiscale analysis of a nonparametric
   Khismatullina and Vogt (2020), Khismatullina and Vogt (2022) and
   Khismatullina and Vogt (2023) for more details on theory and
   applications.
+=======
+Authors@R: c(person("Marina", "Khismatullina",
+  email = "m.khismatullina@gmail.com", role = c("aut", "cre")),
+  person("Michael", "Vogt", email = "m.vogt@uni-ulm.de", role = "aut"))
+Description: This package performs a multiscale analysis of a nonparametric
+  regression with time series errors or nonparametric regressions. In case
+  of one regression, it is possible to detect where the trend function is
+  increasing or decreasing. In case of multiple regression, the test identifies
+  regions where the trend functions are different from each other. See
+  Khismatullina and Vogt (2020), Khismatullina and Vogt (2021) and 
+  Khismatullina and Vogt (2022) for more information and theory.
+>>>>>>> fc10dc457acfb282e9defffd4364204272b0ec35
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.4), Rdpack, foreach, parallel, doParallel
 RdMacros: Rdpack
