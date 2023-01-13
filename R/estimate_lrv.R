@@ -59,7 +59,7 @@ corrections <- function(coefs, var_eta, len) {
 }
 
 #' Computes estimator of the AR(p) coefficients by the procedure from
-#' Khismatullina and Vogt (2020a).
+#' Khismatullina and Vogt (2020).
 #'
 #' @keywords internal
 #' @param data      Time series.

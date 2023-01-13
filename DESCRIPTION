@@ -1,23 +1,25 @@
-Package: multiscale
+Package: MSinference
 Type: Package
-Title: Multiscale Inference for Nonparametric Time Trends
+Title: Multiscale Inference for Nonparametric Time Trend(s)
 Version: 0.0.0.9000
 Date: 2020-05-04
-Authors@R: c(person("Marina", "Khismatullina", email = "m.khismatullina@gmail.com",
+Authors@R: c(person("Marina", "Khismatullina", email = "khismatullina@ese.eur.nl",
   role = c("aut", "cre")),
-  person("Michael", "Vogt", email = "michael.vogt@uni-bonn.de", role = "aut"))
+  person("Michael", "Vogt", email = "m.vogt@uni-ulm.de", role = "aut"))
 Description: This package performs a multiscale analysis of a nonparametric
-  regression with time series errors or nonparametric regressions. In case
-  of one regression, it is possible to detect where the trend function is
-  increasing or decreasing. In case of multiple regression, the test identifies
-  regions where the trend functions are different from each other. See
-  Khismatullina and Vogt (2019) and Khismatullina and Vogt (2020)
-  for more information and theory.
+  regression (or nonparametric regressions) with time series errors. In case
+  of one regression, with the help of this package it is possible to detect
+  the regions where the trend function is increasing or decreasing.
+  In case of multiple regressions, the test identifies regions where
+  the trend functions are different from each other. See
+  Khismatullina and Vogt (2020), Khismatullina and Vogt (2022) and
+  Khismatullina and Vogt (2023) for more details on theory and
+  applications.
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.4), Rdpack, foreach, parallel, doParallel
 RdMacros: Rdpack
 LinkingTo: Rcpp
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Suggests: 
     knitr,

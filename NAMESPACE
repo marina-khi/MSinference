@@ -1,4 +1,4 @@
-useDynLib(multiscale, .registration=TRUE)
+useDynLib(MSinference, .registration=TRUE)
 export(compute_minimal_intervals,
        compute_quantiles,
        compute_quantiles_2,

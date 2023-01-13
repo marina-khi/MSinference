@@ -2,22 +2,22 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 simulate_gaussian <- function(t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order = 0L, correction = TRUE, epidem = FALSE) {
-    .Call(`_multiscale_simulate_gaussian`, t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order, correction, epidem)
+    .Call(`_MSinference_simulate_gaussian`, t_len, n_ts, sim_runs, gset, ijset, sigma, deriv_order, correction, epidem)
 }
 
 simulate_gaussian_2 <- function(t_len, n_ts, gset, ijset, sigma = 1, deriv_order = 0L, correction = TRUE, epidem = FALSE) {
-    .Call(`_multiscale_simulate_gaussian_2`, t_len, n_ts, gset, ijset, sigma, deriv_order, correction, epidem)
+    .Call(`_MSinference_simulate_gaussian_2`, t_len, n_ts, gset, ijset, sigma, deriv_order, correction, epidem)
 }
 
 compute_multiple_statistics <- function(t_len, n_ts, data, gset, ijset, sigma) {
-    .Call(`_multiscale_compute_multiple_statistics`, t_len, n_ts, data, gset, ijset, sigma)
+    .Call(`_MSinference_compute_multiple_statistics`, t_len, n_ts, data, gset, ijset, sigma)
 }
 
 compute_multiple_statistics_2 <- function(t_len, n_ts, data, gset, ijset, sigma_vec) {
-    .Call(`_multiscale_compute_multiple_statistics_2`, t_len, n_ts, data, gset, ijset, sigma_vec)
+    .Call(`_MSinference_compute_multiple_statistics_2`, t_len, n_ts, data, gset, ijset, sigma_vec)
 }
 
 compute_single_statistics <- function(t_len, data, gset, sigma, deriv_order) {
-    .Call(`_multiscale_compute_single_statistics`, t_len, data, gset, sigma, deriv_order)
+    .Call(`_MSinference_compute_single_statistics`, t_len, data, gset, sigma, deriv_order)
 }
 
