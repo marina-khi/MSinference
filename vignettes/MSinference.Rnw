@@ -49,11 +49,7 @@ knitr::opts_chunk$set(fig.width=12, fig.height=8)
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
-<<<<<<< HEAD:vignettes/MSinference.Rnw
 As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "MSinference")|.
-=======
-As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "multiscale")|.
->>>>>>> fc10dc457acfb282e9defffd4364204272b0ec35:vignettes/multiscale.Rnw
 
 <<>>=
 require(MSinference)
@@ -278,11 +274,7 @@ segments(p_plus$startpoint, p_plus$values,
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 
-<<<<<<< HEAD:vignettes/MSinference.Rnw
 As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2023}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "MSinference").
-=======
-As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2021}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
->>>>>>> fc10dc457acfb282e9defffd4364204272b0ec35:vignettes/multiscale.Rnw
 
 <<>>=
 require(MSinference)
