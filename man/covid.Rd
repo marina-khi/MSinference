@@ -10,7 +10,7 @@ one coutnry, with the name of the country (denoted by three letter) being
 the name of the column.
 }
 \source{
-\url{https://www.ecdc.europa.eu}
+\url{https://www.ecdc.europa.eu/en}
 }
 \usage{
 data("covid")

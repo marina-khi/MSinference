@@ -40,8 +40,12 @@
 #'
 #' @return In case of n_ts = 1, the function returns a list
 #' with the following elements:
+#'    \item{testing_result}{A string that contains the result of the testing:
+#'                          either the null hypothesis is rejected or not,
+#'                          what is the confidence level and what is value of
+#'                          the test statistic.}
 #'    \item{quant}{Quantile that was used for testing calculated from
-#'                the gaussian distribution.}
+#'                the Gaussian distribution.}
 #'    \item{statistics}{Value of the multiscale statistics.}
 #'    \item{test_matrix}{Matrix of the test results for the multiscale test
 #'                       defined in Khismatullina and Vogt (2019).
@@ -144,13 +148,13 @@ multiscale_test <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, grid = NUL
                                          byrow = TRUE)
 
     if (stat > quant) {
-      cat("For the given time series we reject H_0 with probability",
-          alpha, ".\n Psihat_statistic = ", stat,
-          ".\n Gaussian quantile value = ", quant, "\n")
+      testing_result <- paste0("For the given time series we reject H_0 with probability ",
+          alpha, ". Psihat_statistic = ", stat,
+          ". Gaussian quantile value = ", quant)
     } else {
-      cat("For the given time series we fail to reject H_0 with probability",
-          alpha, ".\n Psihat_statistic = ", stat,
-          ".\n Gaussian quantile value = ", quant, "\n")
+      testing_result <- paste0("For the given time series we fail to reject H_0 with probability",
+          alpha, ". Psihat_statistic = ", stat,
+          ". Gaussian quantile value = ", quant)
     }
 
     gset_with_vals$test <- test_results
@@ -160,14 +164,14 @@ multiscale_test <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, grid = NUL
 
   } else {
     if (stat > quant) {
-      cat("We reject H_0 with probability", alpha, ". Psihat_statistic = ",
-          stat, ".\n Number of pairwise rejections = ",
-          sum(psi$stat_pairwise > quant, na.rm = TRUE), "out of ", nrow(ijset),
-          ".\n Gaussian quantile value = ", quant, "\n")
+      testing_result <- paste0("We reject H_0 with probability ", alpha, ". Psihat_statistic = ",
+          stat, ". Number of pairwise rejections = ",
+          sum(psi$stat_pairwise > quant, na.rm = TRUE), " out of ", nrow(ijset),
+          ". Gaussian quantile value = ", quant)
     } else {
-      cat("We fail to reject H_0 with probability", alpha,
-          ".\n Psihat_statistic = ", stat,
-          ".\n Gaussian quantile value = ", quant, "\n")
+      testing_result <- paste0("We fail to reject H_0 with probability ", alpha,
+          ". Psihat_statistic = ", stat,
+          ". Gaussian quantile value = ", quant)
     }
 
     gset_with_values <- psi$gset_with_values
@@ -181,7 +185,8 @@ multiscale_test <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, grid = NUL
       gset_with_values[[i]]$test <- test_results
     }
 
-    return(list(quant = quant, stat = stat, stat_pairwise = psi$stat_pairwise,
-                ijset = ijset, gset_with_values = gset_with_values))
+    return(list(testing_result = testing_result, quant = quant, stat = stat,
+                stat_pairwise = psi$stat_pairwise, ijset = ijset,
+                gset_with_values = gset_with_values))
   }
 }

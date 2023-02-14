@@ -1,7 +1,7 @@
-%\VignetteIndexEntry{Multiscale package}
-%\VignetteDepends{multiscale}
+%\VignetteIndexEntry{MSinference package}
+%\VignetteDepends{MSinference}
 %\VignetteKeywords{nonparametric time trends}
-%\VignettePackage{multiscale}
+%\VignettePackage{MSinference}
 %\VignetteEngine{knitr::knitr}
 %\documentclass[a4paper]{amsart}
 %\documentclass[a4paper]{article}
@@ -12,52 +12,52 @@
 \usepackage{enumitem}
 \usepackage{amsmath}
 
-\title{Multiscale Inference for NonParametric Time Trends}
+\title{Multiscale Inference for Nonparametric Time Trends}
 \author{Marina Khismatullina \and Michael Vogt}
 
 \usepackage{Sweave}
 \begin{document}
-\input{multiscale-concordance}
+\input{MSinference-concordance}
 
 \maketitle
 
 \begin{abstract}
-We present the R package `multiscale', which performs muliscale tests for nonparametric time trends.
+We present the R package `MSinference', which performs multiscale tests for nonparametric time trends.
 \end{abstract}
 
 \tableofcontents
 
 \section{Introduction}
-The main functions of the \textbf{multiscale} package are given in
+The main functions of the \textbf{MSinference} package are given in
 the following list:
 \itemize{
-  \item \verb|compute_quantiles()|: Computes the quantiles of the Gaussian version of the statistics 
+  \item \verb|compute_quantiles()|: Computes the quantiles of the Gaussian version of the statistics
   that are used to approximate the critical values for the multiscale test; see Sections \ref{sec:single} and \ref{sec:multiple}.
   \item \verb|compute_statistics()|: Computes the value of the test statistics based on a single time series or multiple time series supplied; see Sections \ref{sec:single} and \ref{sec:multiple}.
   \item \verb|multiscale_test()|: Performs the test; see Sections \ref{sec:single} and \ref{sec:multiple}.
-  \item \verb|estimate_lrv()|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}. 
+  \item \verb|estimate_lrv()|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}.
 }
 
-To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2020a}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2020b}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
+To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2020}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2023}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
 
-The temperature dataset can be obtained from the \textbf{multiscale} package using the function \verb|data(temperature, package = "multiscale")|. The COVID-19 dataset can be obtained from the \textbf{multiscale} package using the function \linebreak \verb|data(covid, package = "multiscale")|.
+The temperature dataset can be obtained from the \textbf{multiscale} package using the function \verb|data(temperature, package = "MSinference")|. The COVID-19 dataset can be obtained from the \textbf{multiscale} package using the function \linebreak \verb|data(covid, package = "MSinference")|.
 
-This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020a} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2020b} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
+This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2023} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
 
 \begin{Schunk}
 \begin{Sinput}
-> knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+> knitr::opts_chunk$set(fig.width=12, fig.height=8)
 \end{Sinput}
 \end{Schunk}
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
 
-As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "multiscale")|.
+As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2020}, we analyse the CET dataset, which is the longest instrumental record of temperature in the world. It contains the mean monthly surface air temperatures (in degrees Celsius) from the year 1659 to the present. CET datasets are freely available for use under Open Government License and can be downloaded from https://www.metoffice.gov.uk/hadobs/hadcet/. You can load the data using the function \verb|data(temperature, package = "MSinference")|.
 
 \begin{Schunk}
 \begin{Sinput}
-> require(multiscale)
-> data(temperature, package = "multiscale")
+> require(MSinference)
+> data(temperature, package = "MSinference")
 > str(temperature)
 \end{Sinput}
 \begin{Soutput}
@@ -89,11 +89,11 @@ where $m$ is the unknown time trend of interest. We are interested in identifyin
 \[ H_0(u,h): m^\prime(w) = 0 \text { for all } w \in [u-h,u+h]. \]
 We want to test the hypothesis $H_0(u,h)$ simultaneously for many different intervals $[u-h,u+h]$. The overall null hypothesis is thus given by
 \[ H_0: \text{ The hypothesis } H_0(u,h) \text{ holds true for all } (u,h) \in \mathcal{G}_T, \]
-where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this application we take into account the default set of points, i.e. all locations $u$ on an equidistant grid \linebreak $u = 5/T, 10/T, \ldots, 355/T$ and all bandwidths $h=5/T, 10/T, 15/T,\ldots, 85/T$. More on the construction of $\mathcal{G}_T$ you can find in \cite{KhismatullinaVogt2020a} and in the package documentation.
+where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this application we take into account the default set of points, i.e. all locations $u$ on an equidistant grid \linebreak $u = 5/T, 10/T, \ldots, 355/T$ and all bandwidths $h=5/T, 10/T, 15/T,\ldots, 85/T$. More on the construction of $\mathcal{G}_T$ you can find in \cite{KhismatullinaVogt2020} and in the package documentation.
 
 \begin{Schunk}
 \begin{Sinput}
-> grid <- construct_grid(t_len) 
+> grid <- construct_grid(t_len)
 > str(grid$gset, max.level = 1, vec.len = 4)
 \end{Sinput}
 \begin{Soutput}
@@ -104,11 +104,11 @@ where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this appl
 \end{Soutput}
 \end{Schunk}
 
-Furthermore, the test statistic requires an estimator of the long-run variance \linebreak $\sigma^2 = \sum_{\ell=-\infty}^{\infty} Cov(\varepsilon_0, \varepsilon_{\ell})$ of the error process $\{ \varepsilon_t \}$. Here we assume that the error process $\{ \varepsilon_t \}$ has the AR($2$) structure 
+Furthermore, the test statistic requires an estimator of the long-run variance \linebreak $\sigma^2 = \sum_{\ell=-\infty}^{\infty} Cov(\varepsilon_0, \varepsilon_{\ell})$ of the error process $\{ \varepsilon_t \}$. Here we assume that the error process $\{ \varepsilon_t \}$ has the AR($2$) structure
 \begin{equation*}
 \varepsilon_t = \sum_{j=1}^{2} a_j \varepsilon_{t-j} + \eta_t,
 \end{equation*}
-where $\eta_t$ are i.i.d.\ innovations with mean $0$ and variance $\nu^2$. We estimate the the long-run error variance $\sigma^2$ by the procedure from \cite{KhismatullinaVogt2020a} (with tuning parameters $q = 25$ and $\overline{r} = 10$), which produces the following value:
+where $\eta_t$ are i.i.d.\ innovations with mean $0$ and variance $\nu^2$. We estimate the the long-run error variance $\sigma^2$ by the procedure from \cite{KhismatullinaVogt2020} (with tuning parameters $q = 25$ and $\overline{r} = 10$), which produces the following value:
 
 \begin{Schunk}
 \begin{Sinput}
@@ -166,7 +166,7 @@ This step is done with these lines of code (running this can take a while):
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 1.859165
+[1] 2.203131
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
@@ -183,23 +183,16 @@ This step is done with these lines of code:
 +                              sigma = sigmahat,
 +                              grid = grid,
 +                              deriv_order = deriv_order)
-> str(result, max.level = 2, vec.len = 2)
+> result$testing_result
 \end{Sinput}
 \begin{Soutput}
-List of 2
- $ stat          : num 3.14
- $ gset_with_vals:'data.frame':	1136 obs. of  4 variables:
-  ..$ u       : num [1:1136] 0.0139 0.0279 ...
-  ..$ h       : num [1:1136] 0.0279 0.0279 ...
-  ..$ vals    : num [1:1136] -0.263 -1.38 ...
-  ..$ vals_cor: num [1:1136] -2.14 -1.02 ...
-  ..- attr(*, "out.attrs")=List of 2
+NULL
 \end{Soutput}
 \end{Schunk}
 We get the list with the following elements as the result:
 \begin{itemize}
 \item \verb|stat| denotes $\widehat{\Psi}_{T}$;
-\item \verb|gset_with_vals| is a dataframe that contains the normalised kernel average. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of 
+\item \verb|gset_with_vals| is a dataframe that contains the normalised kernel average. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of
 $\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$, and column \verb|vals_cor| contains the values of $\Big|\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}\Big| - \lambda(h)$ for the given pair $(u, h)$.
 \end{itemize}
 
@@ -247,27 +240,10 @@ All these steps are not necessary for performing the test, they are already inco
 +                            alpha = alpha,
 +                            deriv_order = deriv_order,
 +                            sim_runs = 10)
+> results$testing_result
 \end{Sinput}
 \begin{Soutput}
-For the given time series we reject H_0 with probability 0.05 .
- Psihat_statistic =  3.136008 .
- Gaussian quantile value =  1.636422 
-\end{Soutput}
-\begin{Sinput}
-> str(results, max.level = 2, vec.len = 2)
-\end{Sinput}
-\begin{Soutput}
-List of 4
- $ quant         : num 1.64
- $ stat          : num 3.14
- $ test_matrix   : num [1:16, 1:71] 0 0 0 0 0 ...
- $ gset_with_vals:'data.frame':	1136 obs. of  5 variables:
-  ..$ u       : num [1:1136] 0.0139 0.0279 ...
-  ..$ h       : num [1:1136] 0.0279 0.0279 ...
-  ..$ vals    : num [1:1136] -0.263 -1.38 ...
-  ..$ vals_cor: num [1:1136] -2.14 -1.02 ...
-  ..$ test    : num [1:1136] 0 0 0 0 0 ...
-  ..- attr(*, "out.attrs")=List of 2
+NULL
 \end{Soutput}
 \end{Schunk}
 
@@ -280,7 +256,6 @@ Now we are ready to present the results. First, we plot the the observed time se
 +      ylim = c(min(temperature) - 0.1, max(temperature) + 0.1))
 > title(main = "(a) observed yearly temperature", font.main = 1,
 +       line = 0.5)
-> 
 \end{Sinput}
 \end{Schunk}
 
@@ -321,7 +296,7 @@ Then we plot the smoothed versions of the time series from (a), that is, the plo
 +                                        grid_points,
 +                                        bws[i]))
 +     lines(ts_start:(ts_start + t_len - 1), smoothed,
-+           lty = i) 
++           lty = i)
 +   }
 > legend(1900, 8.5, legend=c("bw = 0.01", "bw = 0.05", "bw = 0.10",
 +                            "bw = 0.15", "bw = 0.2"),
@@ -331,10 +306,10 @@ Then we plot the smoothed versions of the time series from (a), that is, the plo
 \end{Sinput}
 \end{Schunk}
 
-Finally, we present the results produced by our test. Specifically, we depict in grey the set $\Pi^{+}_T$ which is the collection of time intervals $I_{(u,h)} = [u - h, u + h] \in [0, 1]$ for which our test rejects $H_0(u,h)$ and indicates an increase in the trend function. Furthermore, we depict in black the set of minimal intervals $\Pi^{+, \min}_T$ The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020a}. The function in the package that calculates the minimal intervals is \verb|compute_minimal_intervals()|.
+Finally, we present the results produced by our test. Specifically, we depict in grey the set $\Pi^{+}_T$ which is the collection of time intervals $I_{(u,h)} = [u - h, u + h] \in [0, 1]$ for which our test rejects $H_0(u,h)$ and indicates an increase in the trend function. Furthermore, we depict in black the set of minimal intervals $\Pi^{+, \min}_T$ The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020}. The function in the package that calculates the minimal intervals is \verb|compute_minimal_intervals()|.
 
 
-According to theoretical results in \cite{KhismatullinaVogt2020a}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
+According to theoretical results in \cite{KhismatullinaVogt2020}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
 
 \begin{Schunk}
 \begin{Sinput}
@@ -363,12 +338,12 @@ According to theoretical results in \cite{KhismatullinaVogt2020a}, we can make t
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 
-As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2021}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "multiscale").
+As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2023}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "MSinference").
 
 \begin{Schunk}
 \begin{Sinput}
-> require(multiscale)
-> data(covid, package = "multiscale")
+> require(MSinference)
+> data(covid, package = "MSinference")
 > str(covid)
 \end{Sinput}
 \begin{Soutput}
@@ -383,9 +358,9 @@ Each entry in the dataset denotes the number of new cases of infection per day a
 
 We assume that the outbreak patterns in different countries follow quasi-Poisson distribution with time-varying intensity parameters. Specifically, we let $X_{it}$ be the number of newly confirmed COVID-19 cases on day $t$ in country $i$ and suppose $X_{it}$ satisfy the following nonparametric regression equation:
 \begin{equation}\label{eq:model-intro}
-X_{it} = \lambda_i\Big(\frac{t}{T}\Big) + \sigma \sqrt{\lambda_i\Big(\frac{t}{T}\Big)}\eta_{it}, 
+X_{it} = \lambda_i\Big(\frac{t}{T}\Big) + \sigma \sqrt{\lambda_i\Big(\frac{t}{T}\Big)}\eta_{it},
 \end{equation}
-for $1 \le t \le T$ and $1 \le i \le n$, where $\sigma$ is so-called overdispersion parameter that controls the noise variance, and the noise residuals $\eta_{it}$ have zero mean and unit variance. 
+for $1 \le t \le T$ and $1 \le i \le n$, where $\sigma$ is so-called overdispersion parameter that controls the noise variance, and the noise residuals $\eta_{it}$ have zero mean and unit variance.
 
 In model \eqref{eq:model-intro}, the outbreak pattern of COVID-19 in country $i$ is determined by the intensity function $\lambda_i$. Hence, the question whether the outbreak patterns are comparable across countries amounts to the question whether the intensity functions $\lambda_i$ have the same shape across countries $i$.
 
@@ -442,11 +417,11 @@ Here are the plots of the time series:
 \end{Sinput}
 \end{Schunk}
 
-In order to be able to implement the test, we first estimate the overdispersion parameter $\sigma$. For or each country $i$, let 
+In order to be able to implement the test, we first estimate the overdispersion parameter $\sigma$. For or each country $i$, let
 \begin{align*}
 \hat{\sigma}_i^2 = \frac{\sum_{t=2}^T (X_{it}-X_{it-1})^2}{2 \sum_{t=1}^T X_{it}}
 \end{align*}
-and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2020b}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions. 
+and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2023}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions.
 
 
 \begin{Schunk}
@@ -497,11 +472,11 @@ Furthermore, we compare all pairs of countries $(i,j)$ with $i < j$ (hence, $\ma
 10 4 5
 \end{Soutput}
 \begin{Sinput}
-> grid <- construct_weekly_grid(t_len, min_len = 7, nmbr_of_wks = 4) 
+> grid <- construct_weekly_grid(t_len, min_len = 7, nmbr_of_wks = 4)
 \end{Sinput}
 \end{Schunk}
 
-A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 137$ (as in the application) is given here: 
+A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 137$ (as in the application) is given here:
 \begin{Schunk}
 \begin{Sinput}
 > intervals <- data.frame('left' = grid$gset$u - grid$gset$h,
@@ -518,7 +493,7 @@ A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 13
 \end{Sinput}
 \end{Schunk}
 
-With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$. 
+With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$.
 
 Now we are ready to perform the test.
 \begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
@@ -539,14 +514,15 @@ This step is done with these lines of code:
 > quantiles <- compute_quantiles(t_len = t_len, grid = grid,
 +                                n_ts = n, ijset = ijset,
 +                                sigma = sigmahat,
-+                                sim_runs = sim_runs, epidem = TRUE)
++                                sim_runs = sim_runs,
++                                epidem = TRUE)
 > probs <- as.vector(quantiles$quant[1, ])
 > pos   <- which.min(abs(probs - (1 - alpha)))
 > quant <- quantiles$quant[2, pos]
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.183388
+[1] 2.172825
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -561,14 +537,12 @@ This step is done with these lines of code:
 \begin{Schunk}
 \begin{Sinput}
 > result <- compute_statistics(data = covid, sigma = sigmahat,
-+                              n_ts = n, grid = grid, epidem = TRUE)
-> str(result, max.level = 3, vec.len = 2, list.len = 2)
++                              n_ts = n, grid = grid,
++                              epidem = TRUE)
+> result$testing_result
 \end{Sinput}
 \begin{Soutput}
-List of 4
- $ stat            : num 15.5
- $ stat_pairwise   : num [1:5, 1:5] 0 0 0 0 0 ...
-  [list output truncated]
+NULL
 \end{Soutput}
 \end{Schunk}
 As a result, we get the list with the following elements:
@@ -611,25 +585,16 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 > results <- multiscale_test(data = covid, sigma = sigmahat,
 +                            n_ts = n, grid = grid, ijset = ijset,
 +                            alpha = alpha,
-+                            sim_runs = sim_runs, epidem = TRUE)
++                            sim_runs = sim_runs,
++                            epidem = TRUE)
+> results$testing_result
 \end{Sinput}
 \begin{Soutput}
-We reject H_0 with probability 0.05 . Psihat_statistic =  15.45687 .
- Number of pairwise rejections =  10 out of  10 .
- Gaussian quantile value =  2.22111 
-\end{Soutput}
-\begin{Sinput}
-> str(results, max.level = 3, vec.len = 2, list.len = 2)
-\end{Sinput}
-\begin{Soutput}
-List of 5
- $ quant           : num 2.22
- $ stat            : num 15.5
-  [list output truncated]
+[1] "We reject H_0 with probability 0.05. Psihat_statistic = 15.4568736847961. Number of pairwise rejections = 10 out of 10. Gaussian quantile value = 2.18350485226368"
 \end{Soutput}
 \end{Schunk}
 
-Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2020b}.
+Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2023}.
 
 First, we plot the the observed time series for the two countries.
 
@@ -662,10 +627,10 @@ Now we plot the smoothed versions of the time series from (a), that is, the plot
 +                       MoreArgs = list(covid[, 1], grid_points,
 +                                       bw = 3.5 / t_len))
 > smoothed_2  <- mapply(smoothing, grid_points,
-+                       MoreArgs = list(covid[, 2], grid_points, 
++                       MoreArgs = list(covid[, 2], grid_points,
 +                                       bw = 3.5 / t_len))
 > plot(smoothed_1, ylim=c(min(covid[, 1], covid[, 2]),
-+                         max(covid[, 1], covid[, 2])), 
++                         max(covid[, 1], covid[, 2])),
 +      type="l", col="blue", ylab="", xlab = "", mgp=c(1,0.5,0))
 > title(main = "(b) smoothed curves from (a)", font.main = 1,
 +       line = 0.5)
@@ -673,7 +638,7 @@ Now we plot the smoothed versions of the time series from (a), that is, the plot
 \end{Sinput}
 \end{Schunk}
 
-Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2020b}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
+Finally, we present the results produced by our test. Specifically, we depict in grey the set $\mathcal{F}_{\text{reject}}(1,2)$ of all the intervals $\mathcal{I}_k$ for which the test rejects the null $H_0^{(1, 2, k)}$. The minimal intervals in the subset $\mathcal{F}_{\text{reject}}^{\text{min}}(1, 2)$ are depicted in black. The definition of the minimal intervals and some dicsussion on the topic are given in \cite{KhismatullinaVogt2023}. The function that computes minimal intervals can be accessed as \verb|compute_minimal_intervals()|.
 
 According to theoretical results in this paper, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that there is a difference between the functions $\lambda_1$ and $\lambda_2$ on each of these intervals.
 
@@ -703,43 +668,46 @@ According to theoretical results in this paper, we can make the following simult
 \end{Schunk}
 
 
-\section{Long-run variance estimator}\label{sec:lrv}
-In this section we describe the usage of the estimation procedure of the parameteres of a time series proces. The estimation procedure relies on the following simple observation: If $\{\varepsilon_t\}$ is an AR($p$) process, then the time series $\{ \Delta_q \varepsilon_t \}$ of the differences $\Delta_q \varepsilon_t = \varepsilon_t - \varepsilon_{t-q}$ is an ARMA($p,q$) process of the form
-\begin{equation*}
-\Delta_q \varepsilon_t - \sum_{j=1}^{p} a_j \Delta_q \varepsilon_{t-j} = \eta_t - \eta_{t-q}. 
-\end{equation*}
-As $m$ is Lipschitz, the differences $\Delta_q \varepsilon_t$ of the unobserved error process are close to the differences $\Delta_q Y_{t,T} = Y_{t, T} - Y_{t-q, T}$ of the observed time series. This implies that the differenced time series $\{ \Delta_q Y_{t,T} \}$ is approximately an ARMA($p,q$) process.
+% \section{Long-run variance estimator}\label{sec:lrv}
+% 
+% In development.
 
-Specifically, we proceed as follows. First, we estimate $\boldsymbol{a}$ by 
-\begin{equation*}
-\widetilde{\boldsymbol{a}}_q = \widehat{\boldsymbol{\Gamma}}_q^{-1} \widehat{\boldsymbol{\gamma}}_q, 
-\end{equation*}
-where $\widehat{\boldsymbol{\Gamma}}_q$ denotes the denotes the $p \times p$ sample covariance matrix \linebreak $\widehat{\boldsymbol{\Gamma}}_q = (\widehat{\gamma}_q(i-j): 1 \le i,j \le p)$, and $\widehat{\boldsymbol{\gamma}}_q$ denotes the vector of sample autocovariances $\widehat{\boldsymbol{\gamma}}_q = (\widehat{\gamma}_q(1), \dots,\widehat{\gamma}_q(p))^\top$ with $\widehat{\gamma}_q(\ell) = (T-q)^{-1} \sum_{t=q+\ell+1}^T \Delta_q Y_{t,T} \Delta_q Y_{t-\ell,T}$.
-
-This estimator $\widetilde{\boldsymbol{a}}_q$ depends on the tuning parameter $q$, that is, on the order of the differences $\Delta_q Y_{t,T}$. An appropriate choice of $q$ needs to take care of the following two points: 
-(i) $q$ should be chosen large enough to ensure that the vector $\boldsymbol{c}_q = (c_{q-1},\dots,c_{q-p})^\top$ is close to zero. As we have already seen, the constants $c_k$ decay to zero exponentially fast and can be computed from the recursive equations \eqref{c-recursion} for given parameters $a_1,a_2,a_3,\ldots$ In the special case of an AR($1$) process, for example, one can readily calculate that $c_k \le 0.0035$ for any $k \ge 20$ and any $|a_1| \le 0.75$. Hence, if we have an AR($1$) model for the errors $\varepsilon_t$ and the error process is not too persistent, choosing $q \ge 20$ should make sure that $\boldsymbol{c}_q$ is close to zero. Generally speaking, the recursive equations \eqref{c-recursion} can be used to get some idea for which values of $q$ the vector $\boldsymbol{c}_q$ can be expected to be approximately zero. 
-(ii) $q$ should not be chosen too large in order to ensure that the trend $m$ is appropriately eliminated by taking $q$-th differences. As long as the trend $m$ is not very strong, the two requirements (i) and (ii) can be fulfilled without much difficulty. For example, by choosing $q = 20$ in the AR($1$) case just discussed, we do not only take care of (i) but also make sure that moderate trends $m$ are differenced out appropriately. 
-
-
-When the trend $m$ is very pronounced, in contrast, even moderate values of $q$ may be too large to eliminate the trend appropriately. As a result, the estimator $\widetilde{\boldsymbol{a}}_q$ will have a strong bias. In order to reduce this bias, we refine our estimation procedure as follows: By solving the recursive equations \eqref{c-recursion} with $\boldsymbol{a}$ replaced by $\widetilde{\boldsymbol{a}}_q$, we can compute estimators $\widetilde{c}_k$ of the coefficients $c_k$ and thus estimators $\widetilde{\boldsymbol{c}}_r$ of the vectors $\boldsymbol{c}_r$ for any $r \ge 1$. Moreover, the innovation variance $\nu^2$ can be estimated by $\widetilde{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widetilde{r}_{t,T}^2$, where $\widetilde{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widetilde{a}_j \Delta_1 Y_{t-j,T}$ and $\widetilde{a}_j$ is the $j$-th entry of the vector $\widetilde{\boldsymbol{a}}_q$. Plugging the expressions $\widehat{\boldsymbol{\Gamma}}_r$, $\widehat{\boldsymbol{\gamma}}_r$, $\widetilde{\boldsymbol{c}}_r$ and $\widetilde{\nu}^2$ into \eqref{YW-eq}, we can estimate $\boldsymbol{a}$ by 
-\begin{equation}\label{est-AR-SS} 
-\widehat{\boldsymbol{a}}_r = \widehat{\boldsymbol{\Gamma}}_r^{-1} (\widehat{\boldsymbol{\gamma}}_r + \widetilde{\nu}^2 \widetilde{\boldsymbol{c}}_r),
-\end{equation} 
-where $r$ is a much smaller differencing order than $q$. Specifically, in case (A), we can choose $r$ to be any fixed number $r \ge 1$. Unlike $q$, the parameter $r$ thus remains bounded as $T$ increases. In case (B), our theory allows to choose any number $r$ with $r \ge (1+\delta) p$ for some small $\delta > 0$. Since $q/p \rightarrow \infty$, it holds that $q/r \rightarrow \infty$ as well, which means that $r$ is of smaller order than $q$. Hence, in both cases (A) and (B), the estimator $\widehat{\boldsymbol{a}}_r$ is based on a differencing order $r$ that is much smaller than $q$; only the pilot estimator $\widetilde{\boldsymbol{a}}_q$ relies on differences of the larger order $q$. As a consequence, $\widehat{\boldsymbol{a}}_r$ should eliminate the trend $m$ more appropriately and should thus be less biased than the pilot estimator $\widetilde{\boldsymbol{a}}_q$. In order to make the method more robust against estimation errors in $\widetilde{\boldsymbol{c}}_r$, we finally average the estimators $\widehat{\boldsymbol{a}}_r$ for a few values of $r$. In particular, we define  
-\begin{equation}\label{est-AR}
-\widehat{\boldsymbol{a}} = \frac{1}{\overline{r}-\underline{r}+1} \sum\limits_{r=\underline{r}}^{\overline{r}} \widehat{\boldsymbol{a}}_r, 
-\end{equation}
-where $\underline{r}$ and $\overline{r}$ are chosen as follows: In case (A), we let $\underline{r}$ and $\overline{r}$ be small natural numbers. In case (B), we set $\underline{r} = (1-\delta) p$ for some small $\delta > 0$ and choose $\overline{r}$ such that $\overline{r} - \underline{r}$ remains bounded. For ease of notation, we suppress the dependence of $\widehat{\boldsymbol{a}}$ on the parameters $\underline{r}$ and $\overline{r}$. Once $\widehat{\boldsymbol{a}} =(\widehat{a}_1,\ldots,\widehat{a}_p)^\top$ is computed, the long-run variance $\sigma^2$ can be estimated by 
-\begin{equation} \label{est-lrv}
-\widehat{\sigma}^2 = \frac{\widehat{\nu}^2}{(1 - \sum_{j=1}^p \widehat{a}_j)^2}, 
-\end{equation}
-where $\widehat{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widehat{r}_{t,T}^2$ with $\widehat{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widehat{a}_j \Delta_1 Y_{t-j,T}$ is an estimator of the innovation variance $\nu^2$ and we make use of the fact that $\sigma^2 = \nu^2 / (1 - \sum_{j=1}^{p^*} a_j)^2$ for the AR($p^*$) process $\{\varepsilon_t\}$. 
-
-
-
-\section{Conclusion}\label{sec:concl}
-In development.
-
-\bibliography{bibliography}
-\bibliographystyle{ims}
+% In this section we describe the usage of the estimation procedure of the parameteres of a time series proces. The estimation procedure relies on the following simple observation: If $\{\varepsilon_t\}$ is an AR($p$) process, then the time series $\{ \Delta_q \varepsilon_t \}$ of the differences $\Delta_q \varepsilon_t = \varepsilon_t - \varepsilon_{t-q}$ is an ARMA($p,q$) process of the form
+% \begin{equation*}
+% \Delta_q \varepsilon_t - \sum_{j=1}^{p} a_j \Delta_q \varepsilon_{t-j} = \eta_t - \eta_{t-q}. 
+% \end{equation*}
+% As $m$ is Lipschitz, the differences $\Delta_q \varepsilon_t$ of the unobserved error process are close to the differences $\Delta_q Y_{t,T} = Y_{t, T} - Y_{t-q, T}$ of the observed time series. This implies that the differenced time series $\{ \Delta_q Y_{t,T} \}$ is approximately an ARMA($p,q$) process.
+% 
+% Specifically, we proceed as follows. First, we estimate $\boldsymbol{a}$ by 
+% \begin{equation*}
+% \widetilde{\boldsymbol{a}}_q = \widehat{\boldsymbol{\Gamma}}_q^{-1} \widehat{\boldsymbol{\gamma}}_q, 
+% \end{equation*}
+% where $\widehat{\boldsymbol{\Gamma}}_q$ denotes the denotes the $p \times p$ sample covariance matrix \linebreak $\widehat{\boldsymbol{\Gamma}}_q = (\widehat{\gamma}_q(i-j): 1 \le i,j \le p)$, and $\widehat{\boldsymbol{\gamma}}_q$ denotes the vector of sample autocovariances $\widehat{\boldsymbol{\gamma}}_q = (\widehat{\gamma}_q(1), \dots,\widehat{\gamma}_q(p))^\top$ with $\widehat{\gamma}_q(\ell) = (T-q)^{-1} \sum_{t=q+\ell+1}^T \Delta_q Y_{t,T} \Delta_q Y_{t-\ell,T}$.
+% 
+% This estimator $\widetilde{\boldsymbol{a}}_q$ depends on the tuning parameter $q$, that is, on the order of the differences $\Delta_q Y_{t,T}$. An appropriate choice of $q$ needs to take care of the following two points: 
+% (i) $q$ should be chosen large enough to ensure that the vector $\boldsymbol{c}_q = (c_{q-1},\dots,c_{q-p})^\top$ is close to zero. As we have already seen, the constants $c_k$ decay to zero exponentially fast and can be computed from the recursive equations \eqref{c-recursion} for given parameters $a_1,a_2,a_3,\ldots$ In the special case of an AR($1$) process, for example, one can readily calculate that $c_k \le 0.0035$ for any $k \ge 20$ and any $|a_1| \le 0.75$. Hence, if we have an AR($1$) model for the errors $\varepsilon_t$ and the error process is not too persistent, choosing $q \ge 20$ should make sure that $\boldsymbol{c}_q$ is close to zero. Generally speaking, the recursive equations \eqref{c-recursion} can be used to get some idea for which values of $q$ the vector $\boldsymbol{c}_q$ can be expected to be approximately zero. 
+% (ii) $q$ should not be chosen too large in order to ensure that the trend $m$ is appropriately eliminated by taking $q$-th differences. As long as the trend $m$ is not very strong, the two requirements (i) and (ii) can be fulfilled without much difficulty. For example, by choosing $q = 20$ in the AR($1$) case just discussed, we do not only take care of (i) but also make sure that moderate trends $m$ are differenced out appropriately. 
+% 
+% 
+% When the trend $m$ is very pronounced, in contrast, even moderate values of $q$ may be too large to eliminate the trend appropriately. As a result, the estimator $\widetilde{\boldsymbol{a}}_q$ will have a strong bias. In order to reduce this bias, we refine our estimation procedure as follows: By solving the recursive equations \eqref{c-recursion} with $\boldsymbol{a}$ replaced by $\widetilde{\boldsymbol{a}}_q$, we can compute estimators $\widetilde{c}_k$ of the coefficients $c_k$ and thus estimators $\widetilde{\boldsymbol{c}}_r$ of the vectors $\boldsymbol{c}_r$ for any $r \ge 1$. Moreover, the innovation variance $\nu^2$ can be estimated by $\widetilde{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widetilde{r}_{t,T}^2$, where $\widetilde{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widetilde{a}_j \Delta_1 Y_{t-j,T}$ and $\widetilde{a}_j$ is the $j$-th entry of the vector $\widetilde{\boldsymbol{a}}_q$. Plugging the expressions $\widehat{\boldsymbol{\Gamma}}_r$, $\widehat{\boldsymbol{\gamma}}_r$, $\widetilde{\boldsymbol{c}}_r$ and $\widetilde{\nu}^2$ into \eqref{YW-eq}, we can estimate $\boldsymbol{a}$ by 
+% \begin{equation}\label{est-AR-SS} 
+% \widehat{\boldsymbol{a}}_r = \widehat{\boldsymbol{\Gamma}}_r^{-1} (\widehat{\boldsymbol{\gamma}}_r + \widetilde{\nu}^2 \widetilde{\boldsymbol{c}}_r),
+% \end{equation} 
+% where $r$ is a much smaller differencing order than $q$. Specifically, in case (A), we can choose $r$ to be any fixed number $r \ge 1$. Unlike $q$, the parameter $r$ thus remains bounded as $T$ increases. In case (B), our theory allows to choose any number $r$ with $r \ge (1+\delta) p$ for some small $\delta > 0$. Since $q/p \rightarrow \infty$, it holds that $q/r \rightarrow \infty$ as well, which means that $r$ is of smaller order than $q$. Hence, in both cases (A) and (B), the estimator $\widehat{\boldsymbol{a}}_r$ is based on a differencing order $r$ that is much smaller than $q$; only the pilot estimator $\widetilde{\boldsymbol{a}}_q$ relies on differences of the larger order $q$. As a consequence, $\widehat{\boldsymbol{a}}_r$ should eliminate the trend $m$ more appropriately and should thus be less biased than the pilot estimator $\widetilde{\boldsymbol{a}}_q$. In order to make the method more robust against estimation errors in $\widetilde{\boldsymbol{c}}_r$, we finally average the estimators $\widehat{\boldsymbol{a}}_r$ for a few values of $r$. In particular, we define  
+% \begin{equation}\label{est-AR}
+% \widehat{\boldsymbol{a}} = \frac{1}{\overline{r}-\underline{r}+1} \sum\limits_{r=\underline{r}}^{\overline{r}} \widehat{\boldsymbol{a}}_r, 
+% \end{equation}
+% where $\underline{r}$ and $\overline{r}$ are chosen as follows: In case (A), we let $\underline{r}$ and $\overline{r}$ be small natural numbers. In case (B), we set $\underline{r} = (1-\delta) p$ for some small $\delta > 0$ and choose $\overline{r}$ such that $\overline{r} - \underline{r}$ remains bounded. For ease of notation, we suppress the dependence of $\widehat{\boldsymbol{a}}$ on the parameters $\underline{r}$ and $\overline{r}$. Once $\widehat{\boldsymbol{a}} =(\widehat{a}_1,\ldots,\widehat{a}_p)^\top$ is computed, the long-run variance $\sigma^2$ can be estimated by 
+% \begin{equation} \label{est-lrv}
+% \widehat{\sigma}^2 = \frac{\widehat{\nu}^2}{(1 - \sum_{j=1}^p \widehat{a}_j)^2}, 
+% \end{equation}
+% where $\widehat{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widehat{r}_{t,T}^2$ with $\widehat{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widehat{a}_j \Delta_1 Y_{t-j,T}$ is an estimator of the innovation variance $\nu^2$ and we make use of the fact that $\sigma^2 = \nu^2 / (1 - \sum_{j=1}^{p^*} a_j)^2$ for the AR($p^*$) process $\{\varepsilon_t\}$. 
+% 
+% 
+% 
+% \section{Conclusion}\label{sec:concl}
+% In development.
+% 
+% \bibliography{bibliography}
+% \bibliographystyle{ims}
 \end{document}

@@ -68,8 +68,12 @@ dealing with epidemic time trends. Default is FALSE.}
 \value{
 In case of n_ts = 1, the function returns a list
 with the following elements:
+   \item{testing_result}{A string that contains the result of the testing:
+                         either the null hypothesis is rejected or not,
+                         what is the confidence level and what is value of
+                         the test statistic.}
    \item{quant}{Quantile that was used for testing calculated from
-               the gaussian distribution.}
+               the Gaussian distribution.}
    \item{statistics}{Value of the multiscale statistics.}
    \item{test_matrix}{Matrix of the test results for the multiscale test
                       defined in Khismatullina and Vogt (2019).

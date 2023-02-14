@@ -12,7 +12,7 @@
 #' @format A matrix with 99 rows and 41 columns. Each column corresponds to
 #' one coutnry, with the name of the country (denoted by three letter) being
 #' the name of the column.
-#' @source \url{https://www.ecdc.europa.eu}
+#' @source \url{https://www.ecdc.europa.eu/en}
 #' @usage data("covid")
 "covid"
 
