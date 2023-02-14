@@ -28,6 +28,9 @@ Default is FALSE.}
 
 \item{...}{Any further options to be passed to the image function.}
 }
+\value{
+No return value, called for plotting a SiZer map.
+}
 \description{
 Plots SiZer map from the test results of the multiscale testing procedure.
 }

@@ -35,8 +35,6 @@
 #' @docType package
 #' @name msinference-package
 #' @aliases MSinference
-#' @seealso
-#'    \url{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12347}
 #' @references 
 #' \insertRef{KhismatullinaVogt2020}{MSinference}
 #'             
