@@ -21,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-We present the R package `MSinference', which performs muliscale tests for nonparametric time trends.
+We present the R package `MSinference', which performs multiscale tests for nonparametric time trends.
 \end{abstract}
 
 \tableofcontents
@@ -30,11 +30,11 @@ We present the R package `MSinference', which performs muliscale tests for nonpa
 The main functions of the \textbf{MSinference} package are given in
 the following list:
 \itemize{
-  \item \verb|compute_quantiles()|: Computes the quantiles of the Gaussian version of the statistics 
+  \item \verb|compute_quantiles()|: Computes the quantiles of the Gaussian version of the statistics
   that are used to approximate the critical values for the multiscale test; see Sections \ref{sec:single} and \ref{sec:multiple}.
   \item \verb|compute_statistics()|: Computes the value of the test statistics based on a single time series or multiple time series supplied; see Sections \ref{sec:single} and \ref{sec:multiple}.
   \item \verb|multiscale_test()|: Performs the test; see Sections \ref{sec:single} and \ref{sec:multiple}.
-  \item \verb|estimate_lrv()|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}. 
+  \item \verb|estimate_lrv()|: Computes the estimator for the long-run variance of the errors in a nonparametric regression model; see Section \ref{sec:lrv}.
 }
 
 To demonstrate the use of our functions, we analyse two datasets. In order to illustrate the method from \cite{KhismatullinaVogt2020}, we examine the Central England temperature record, which is the longest instrumental temperature time series in the world. The data are publicly available on the webpage of the UK Met Office. A detailed description of the data can be found in \cite{Parker1992}. In order to illustrate the method from \cite{KhismatullinaVogt2023}, we examine the daily number of infections of COVID-19 across different countries. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020.
@@ -44,7 +44,7 @@ The temperature dataset can be obtained from the \textbf{multiscale} package usi
 This vignette is organized as follows. Section \ref{sec:single} presents our mutliscale test for analysing a single time trend as in\cite{KhismatullinaVogt2020} and the results of applying it to the temperature data. Section \ref{sec:multiple} describes the multiscale procedure for comparing different time trends as in \cite{KhismatullinaVogt2023} and displays the results of analysing the COVID-19 data with the help of our test. Section \ref{sec:lrv} introduces the estimator of the long-run variance which is needed for analyzing a nonparametric regression with errors of class AR($p$). %Section \ref{sec:concl} concludes.
 
 <<include = FALSE>>=
-knitr::opts_chunk$set(fig.width=12, fig.height=8) 
+knitr::opts_chunk$set(fig.width=12, fig.height=8)
 @
 
 \section{Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}\label{sec:single}
@@ -77,11 +77,11 @@ We want to test the hypothesis $H_0(u,h)$ simultaneously for many different inte
 where $\mathcal{G}_T$ is some set of points $(u,h)$. Specifically, for this application we take into account the default set of points, i.e. all locations $u$ on an equidistant grid \linebreak $u = 5/T, 10/T, \ldots, 355/T$ and all bandwidths $h=5/T, 10/T, 15/T,\ldots, 85/T$. More on the construction of $\mathcal{G}_T$ you can find in \cite{KhismatullinaVogt2020} and in the package documentation.
 
 <<>>=
-grid <- construct_grid(t_len) 
+grid <- construct_grid(t_len)
 str(grid$gset, max.level = 1, vec.len = 4)
 @
 
-Furthermore, the test statistic requires an estimator of the long-run variance \linebreak $\sigma^2 = \sum_{\ell=-\infty}^{\infty} Cov(\varepsilon_0, \varepsilon_{\ell})$ of the error process $\{ \varepsilon_t \}$. Here we assume that the error process $\{ \varepsilon_t \}$ has the AR($2$) structure 
+Furthermore, the test statistic requires an estimator of the long-run variance \linebreak $\sigma^2 = \sum_{\ell=-\infty}^{\infty} Cov(\varepsilon_0, \varepsilon_{\ell})$ of the error process $\{ \varepsilon_t \}$. Here we assume that the error process $\{ \varepsilon_t \}$ has the AR($2$) structure
 \begin{equation*}
 \varepsilon_t = \sum_{j=1}^{2} a_j \varepsilon_{t-j} + \eta_t,
 \end{equation*}
@@ -144,12 +144,12 @@ result <- compute_statistics(data = temperature,
                              sigma = sigmahat,
                              grid = grid,
                              deriv_order = deriv_order)
-str(result, max.level = 2, vec.len = 2)
+result$testing_result
 @
 We get the list with the following elements as the result:
 \begin{itemize}
 \item \verb|stat| denotes $\widehat{\Psi}_{T}$;
-\item \verb|gset_with_vals| is a dataframe that contains the normalised kernel average. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of 
+\item \verb|gset_with_vals| is a dataframe that contains the normalised kernel average. The dataframe is coded in the following way. Columns \verb|u| and \verb|h| determine the element $(u, h) \in \mathcal{G}_T$ for which we calculate the kernel average. Column \verb|vals| consists of the values of
 $\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}$, and column \verb|vals_cor| contains the values of $\Big|\frac{\widehat{\psi}_{T}(u, h)}{\widehat{\sigma}}\Big| - \lambda(h)$ for the given pair $(u, h)$.
 \end{itemize}
 
@@ -181,7 +181,7 @@ results <- multiscale_test(data = temperature,
                            alpha = alpha,
                            deriv_order = deriv_order,
                            sim_runs = 10)
-str(results, max.level = 2, vec.len = 2)
+results$testing_result
 @
 
 Now we are ready to present the results. First, we plot the the observed time series.
@@ -192,7 +192,6 @@ plot(ts_start:(ts_start + t_len - 1), temperature, type = 'l',
      ylim = c(min(temperature) - 0.1, max(temperature) + 0.1))
 title(main = "(a) observed yearly temperature", font.main = 1,
       line = 0.5)
-
 @
 
 Then we plot the smoothed versions of the time series from (a), that is, the plot shows nonparametric kernel estimates of the trend function $m$, where the bandwidth is set to $0.01, 0.05, 0.1, 0.15, 0.2$ and a rectangular kernel is used. This is not necessary but sometimes useful.
@@ -233,12 +232,12 @@ for (i in 1:5){
                                        grid_points,
                                        bws[i]))
     lines(ts_start:(ts_start + t_len - 1), smoothed,
-          lty = i) 
+          lty = i)
   }
 legend(1900, 8.5, legend=c("bw = 0.01", "bw = 0.05", "bw = 0.10",
                            "bw = 0.15", "bw = 0.2"),
        lty = 1:5, cex = 0.95, ncol=1)
-  
+
 title(main = "(b) smoothed time series for different bandwidths",
       font.main = 1, line = 0.5)
 @
@@ -286,9 +285,9 @@ Each entry in the dataset denotes the number of new cases of infection per day a
 
 We assume that the outbreak patterns in different countries follow quasi-Poisson distribution with time-varying intensity parameters. Specifically, we let $X_{it}$ be the number of newly confirmed COVID-19 cases on day $t$ in country $i$ and suppose $X_{it}$ satisfy the following nonparametric regression equation:
 \begin{equation}\label{eq:model-intro}
-X_{it} = \lambda_i\Big(\frac{t}{T}\Big) + \sigma \sqrt{\lambda_i\Big(\frac{t}{T}\Big)}\eta_{it}, 
+X_{it} = \lambda_i\Big(\frac{t}{T}\Big) + \sigma \sqrt{\lambda_i\Big(\frac{t}{T}\Big)}\eta_{it},
 \end{equation}
-for $1 \le t \le T$ and $1 \le i \le n$, where $\sigma$ is so-called overdispersion parameter that controls the noise variance, and the noise residuals $\eta_{it}$ have zero mean and unit variance. 
+for $1 \le t \le T$ and $1 \le i \le n$, where $\sigma$ is so-called overdispersion parameter that controls the noise variance, and the noise residuals $\eta_{it}$ have zero mean and unit variance.
 
 In model \eqref{eq:model-intro}, the outbreak pattern of COVID-19 in country $i$ is determined by the intensity function $\lambda_i$. Hence, the question whether the outbreak patterns are comparable across countries amounts to the question whether the intensity functions $\lambda_i$ have the same shape across countries $i$.
 
@@ -324,11 +323,11 @@ legend("topright", legend = c("DEU", "GBR", "ESP", "FRA", "ITA"),
        inset = 0.02, lty = 1, col = 1:t_len, cex = 0.8)
 @
 
-In order to be able to implement the test, we first estimate the overdispersion parameter $\sigma$. For or each country $i$, let 
+In order to be able to implement the test, we first estimate the overdispersion parameter $\sigma$. For or each country $i$, let
 \begin{align*}
 \hat{\sigma}_i^2 = \frac{\sum_{t=2}^T (X_{it}-X_{it-1})^2}{2 \sum_{t=1}^T X_{it}}
 \end{align*}
-and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2023}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions. 
+and set $\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^n \hat{\sigma}_i^2$. As shown in \cite{KhismatullinaVogt2023}, $\hat{\sigma}^2$ is a consistent estimator of $\sigma^2$ under some regularity conditions.
 
 
 <<>>=
@@ -357,10 +356,10 @@ ijset           <- expand.grid(i = 1:n, j = 1:n)
 ijset           <- ijset[ijset$i < ijset$j, ]
 rownames(ijset) <- NULL
 ijset
-grid <- construct_weekly_grid(t_len, min_len = 7, nmbr_of_wks = 4) 
+grid <- construct_weekly_grid(t_len, min_len = 7, nmbr_of_wks = 4)
 @
 
-A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 137$ (as in the application) is given here: 
+A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 137$ (as in the application) is given here:
 <<>>=
 intervals <- data.frame('left' = grid$gset$u - grid$gset$h,
                         'right' = grid$gset$u + grid$gset$h,
@@ -376,7 +375,7 @@ segments(intervals$left * t_len, intervals$v,
          lwd = 2)
 @
 
-With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$. 
+With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{(i, j, k)}$ that $\lambda_i(\cdot) = \lambda_j(\cdot)$ on the interval $\mathcal{I}_k \in \mathcal{F}$ for each $(i, j, k)$. We denote the length of the intervals from the grid as $h_k$.
 
 Now we are ready to perform the test.
 \begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
@@ -417,7 +416,7 @@ This step is done with these lines of code:
 result <- compute_statistics(data = covid, sigma = sigmahat,
                              n_ts = n, grid = grid,
                              epidem = TRUE)
-str(result, max.level = 3, vec.len = 2, list.len = 2)
+result$testing_result
 @
 As a result, we get the list with the following elements:
 \begin{itemize}
@@ -448,8 +447,7 @@ results <- multiscale_test(data = covid, sigma = sigmahat,
                            alpha = alpha,
                            sim_runs = sim_runs,
                            epidem = TRUE)
-str(results, max.level = 3, vec.len = 2,
-    list.len = 2)
+results$testing_result
 @
 
 Now we are ready to present the results. For the sake of brevity, we only show the results for the pairwise comparisons of Germany ($i = 1$) with the United Kingdom ($j = 2$). This is coded as the first comparison in \verb|ijset|. The remaining figures can be found in \cite{KhismatullinaVogt2023}.
@@ -482,13 +480,13 @@ grid_points <- seq(from = 1 / t_len, to = 1, length.out = t_len)
 smoothed_1  <- mapply(smoothing, grid_points,
                       MoreArgs = list(covid[, 1], grid_points,
                                       bw = 3.5 / t_len))
-  
+
 smoothed_2  <- mapply(smoothing, grid_points,
-                      MoreArgs = list(covid[, 2], grid_points, 
+                      MoreArgs = list(covid[, 2], grid_points,
                                       bw = 3.5 / t_len))
 
 plot(smoothed_1, ylim=c(min(covid[, 1], covid[, 2]),
-                        max(covid[, 1], covid[, 2])), 
+                        max(covid[, 1], covid[, 2])),
      type="l", col="blue", ylab="", xlab = "", mgp=c(1,0.5,0))
 title(main = "(b) smoothed curves from (a)", font.main = 1,
       line = 0.5)
@@ -524,9 +522,9 @@ segments(reject_set$startpoint, reject_set$values,
 @
 
 
-\section{Long-run variance estimator}\label{sec:lrv}
-
-In development.
+% \section{Long-run variance estimator}\label{sec:lrv}
+% 
+% In development.
 
 % In this section we describe the usage of the estimation procedure of the parameteres of a time series proces. The estimation procedure relies on the following simple observation: If $\{\varepsilon_t\}$ is an AR($p$) process, then the time series $\{ \Delta_q \varepsilon_t \}$ of the differences $\Delta_q \varepsilon_t = \varepsilon_t - \varepsilon_{t-q}$ is an ARMA($p,q$) process of the form
 % \begin{equation*}
@@ -560,10 +558,10 @@ In development.
 % where $\widehat{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widehat{r}_{t,T}^2$ with $\widehat{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widehat{a}_j \Delta_1 Y_{t-j,T}$ is an estimator of the innovation variance $\nu^2$ and we make use of the fact that $\sigma^2 = \nu^2 / (1 - \sum_{j=1}^{p^*} a_j)^2$ for the AR($p^*$) process $\{\varepsilon_t\}$. 
 % 
 % 
-
-\section{Conclusion}\label{sec:concl}
-In development.
-
-\bibliography{bibliography}
-\bibliographystyle{ims}
+% 
+% \section{Conclusion}\label{sec:concl}
+% In development.
+% 
+% \bibliography{bibliography}
+% \bibliographystyle{ims}
 \end{document}

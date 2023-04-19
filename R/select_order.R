@@ -79,10 +79,10 @@ select_order <- function(data, q = NULL, r = 5:15) {
     }
     maxim <- max(criterion_matrix[, 3:7])
     order_results <- c(order_results, maxim)
-    cat("For ", list_names[j], " the results are as follows: ",
-        max(criterion_matrix$fpe), " ", max(criterion_matrix$aic), " ",
-        max(criterion_matrix$aicc), " ", max(criterion_matrix$sic), " ",
-        max(criterion_matrix$hq), " \n")
+    # cat("For ", list_names[j], " the results are as follows: ",
+    #     max(criterion_matrix$fpe), " ", max(criterion_matrix$aic), " ",
+    #     max(criterion_matrix$aicc), " ", max(criterion_matrix$sic), " ",
+    #     max(criterion_matrix$hq), " \n")
     result_list[[list_names[j]]] <- criterion_matrix
   }
   result_list[["orders"]] <- order_results

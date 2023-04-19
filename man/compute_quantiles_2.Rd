@@ -14,7 +14,8 @@ compute_quantiles_2(
   sim_runs = 1000,
   probs = seq(0.5, 0.995, by = 0.005),
   correction = TRUE,
-  epidem = FALSE
+  epidem = FALSE,
+  numCores = NULL
 )
 }
 \arguments{
@@ -58,6 +59,11 @@ Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.}
 
 \item{epidem}{Logical variable, TRUE if we are using
 dealing with epidemic time trends. Default is FALSE.}
+
+\item{numCores}{Integer value used to indicate how many cores are used
+while calculating the critical value. Default is NULL,
+then the formula used is
+\code{round(detectCores() * .70)}.}
 }
 \value{
 Matrix with 2 rows where the first row contains
@@ -71,5 +77,5 @@ Quantiles from the gaussian version of the test
                     the critical values for the multiscale test.
 }
 \examples{
-compute_quantiles(100)
+compute_quantiles_2(100, numCores = 2)
 }

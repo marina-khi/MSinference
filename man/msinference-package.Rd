@@ -42,6 +42,3 @@ This package performs a multiscale analysis of a single nonparametric
             
 \insertRef{KhismatullinaVogt2023}{MSinference}
 }
-\seealso{
-\url{https://rss.onlinelibrary.wiley.com/doi/full/10.1111/rssb.12347}
-}

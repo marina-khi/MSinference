@@ -8,6 +8,8 @@
 #' @param greyscale    Whether SiZer map is plotted in grey scale.
 #'                     Default is FALSE.
 #' @param ...          Any further options to be passed to the image function.
+#' 
+#' @return             No return value, called for plotting a SiZer map.
 #'
 #' @export
 

@@ -34,6 +34,10 @@
 #'                     \eqn{a_k} and \eqn{b_k}.
 #' @param epidem       Logical variable, TRUE if we are using
 #'                     dealing with epidemic time trends. Default is FALSE.
+#' @param numCores     Integer value used to indicate how many cores are used
+#'                     while calculating the critical value. Default is NULL,
+#'                     then the formula used is
+#'                     \code{round(detectCores() * .70)}.
 #'
 #' @return             Matrix with 2 rows where the first row contains
 #'                     the vector of probabilities (probs) and the second
@@ -42,15 +46,17 @@
 #' @export
 #'
 #' @examples
-#' compute_quantiles(100)
+#' compute_quantiles_2(100, numCores = 2)
 
 compute_quantiles_2 <- function(t_len, n_ts = 1, grid = NULL,
                                 ijset = NULL, sigma = 1,
                                 deriv_order = 0, sim_runs = 1000,
                                 probs = seq(0.5, 0.995, by = 0.005),
-                                correction = TRUE, epidem = FALSE) {
-  
-  numCores  <- round(detectCores() * .70)
+                                correction = TRUE, epidem = FALSE,
+                                numCores = NULL) {
+  if (is.null(numCores)) {
+    numCores <- round(detectCores() * .70)
+  }
   
   if (is.null(grid)) {
     grid <- construct_grid(t_len)
