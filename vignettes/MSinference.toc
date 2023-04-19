@@ -1,3 +1,5 @@
 \contentsline {section}{\numberline {1}Introduction}{1}%
 \contentsline {section}{\numberline {2}Multiscale Inference for a Single Nonparametric Regression with Time Series Errors}{2}%
 \contentsline {section}{\numberline {3}Multiscale Inference for Multiple Nonparametric Regressions}{8}%
+\contentsline {section}{\numberline {4}Multiscale Inference for Multiple Semi-parametric Regressions}{15}%
+\contentsline {section}{\numberline {5}Conclusion}{21}%

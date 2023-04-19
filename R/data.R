@@ -10,7 +10,7 @@
 #' common practice (Cohen and Kupferschmidt (2020)).
 #' 
 #' @format A matrix with 99 rows and 41 columns. Each column corresponds to
-#' one coutnry, with the name of the country (denoted by three letter) being
+#' one country, with the name of the country (denoted by three letter) being
 #' the name of the column.
 #' @source \url{https://www.ecdc.europa.eu/en}
 #' @usage data("covid")
@@ -37,3 +37,12 @@
 #' @source \url{https://www.metoffice.gov.uk/hadobs/hadcet/}
 #' @usage data("temperature")
 "temperature"
+
+#' Data on house prices
+#' 
+#' @format A matrix with 984 rows and 18 columns. Each column corresponds to
+#' one country, with the name of the country (denoted by three letter) being
+#' the name of the column.
+#' @source \url{https://www.ecdc.europa.eu/en}
+#' @usage data("house_prices")
+"house_prices"

@@ -166,7 +166,7 @@ This step is done with these lines of code (running this can take a while):
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.203131
+[1] 1.691946
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\widehat{\psi}_{T}(u, h)$ as
@@ -522,7 +522,7 @@ This step is done with these lines of code:
 > quant
 \end{Sinput}
 \begin{Soutput}
-[1] 2.172825
+[1] 2.188169
 \end{Soutput}
 \end{Schunk}
   \item Compute the kernel averages $\hat{\psi}_{ijk,T}$ as
@@ -590,7 +590,7 @@ You do not have to perform these steps yourself, the function \verb|multiscale_t
 > results$testing_result
 \end{Sinput}
 \begin{Soutput}
-[1] "We reject H_0 with probability 0.05. Psihat_statistic = 15.4568736847961. Number of pairwise rejections = 10 out of 10. Gaussian quantile value = 2.18350485226368"
+[1] "We reject H_0 with probability 0.05. Psihat_statistic = 15.4568736847961. Number of pairwise rejections = 10 out of 10. Gaussian quantile value = 2.22894463592929"
 \end{Soutput}
 \end{Schunk}
 
@@ -705,9 +705,336 @@ According to theoretical results in this paper, we can make the following simult
 % 
 % 
 % 
-% \section{Conclusion}\label{sec:concl}
-% In development.
-% 
-% \bibliography{bibliography}
-% \bibliographystyle{ims}
-\end{document}
+\section{Multiscale Inference for Multiple Semi-parametric Regressions}\label{sec:semi}
+
+As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2022}, we analyse house prices along with four variables: real GDP (GDP), population size (POP), long-term interest rate (I), and inflation (INFL) which is measured as a change in CPI. We retrieve the nominal annual data of house prices for 14 advanced economies from the paper by \cite{Knoll2017} over the period 1870 to 2012, while real GDP, population size, interest rate, and CPI are taken from the Jorda-Schularick-Taylor Macrohistory Database (\texttt{http://www.macrohistory.net/data/}). For more detailed information on variable transformation and selection, we refer to \cite{KhismatullinaVogt2022}. In sum, we consider 8 countries over the time period 1890 to 2012 in our analysis. You can load the data using the function \verb|data(hp, package = "MSinference")|.
+
+\begin{Schunk}
+\begin{Sinput}
+> require(MSinference)
+> data(house_prices, package = "MSinference")
+> str(house_prices)
+\end{Sinput}
+\begin{Soutput}
+Classes ‘grouped_df’, ‘tbl_df’, ‘tbl’ and 'data.frame':	984 obs. of  18 variables:
+ $ iso          : chr  "AUS" "AUS" "AUS" "AUS" ...
+ $ year         : num  1890 1891 1892 1893 1894 ...
+ $ country      : chr  "Australia" "Australia" "Australia" "Australia" ...
+ $ cpi          : num  2.79 2.75 2.71 2.62 2.46 ...
+ $ rgdppc       : num  19 19.9 17 15.7 16 ...
+ $ pop          : num  3107 3196 3274 3334 3395 ...
+ $ ltrate       : num  3.55 3.58 3.65 3.72 3.57 ...
+ $ hpnom        : num  0.82 0.812 0.665 0.541 0.468 ...
+ $ hpreal       : num  29.4 29.5 24.5 20.6 19 ...
+ $ infl         : num  0 -0.000417 -0.000417 -0.000833 -0.001667 ...
+ $ log_hp       : num  3.38 3.39 3.2 3.03 2.95 ...
+ $ log_gdp      : num  2.94 2.99 2.83 2.76 2.77 ...
+ $ log_pop      : num  8.04 8.07 8.09 8.11 8.13 ...
+ $ delta_log_hp : num  NA 0.00499 -0.1854 -0.17354 -0.08101 ...
+ $ delta_log_pop: num  NA 0.0282 0.0241 0.0182 0.0181 ...
+ $ delta_log_gdp: num  NA 0.0471 -0.1594 -0.0761 0.0157 ...
+ $ delta_ltrate : num  NA 0.023 0.0749 0.0679 -0.1463 ...
+ $ delta_infl   : num  NA -0.000417 0 -0.000417 -0.000833 ...
+ - attr(*, "groups")=Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	8 obs. of  2 variables:
+  ..$ iso  : chr [1:8] "AUS" "BEL" "DNK" "FRA" ...
+  ..$ .rows:List of 8
+  .. ..$ : int [1:123] 1 2 3 4 5 6 7 8 9 10 ...
+  .. ..$ : int [1:123] 124 125 126 127 128 129 130 131 132 133 ...
+  .. ..$ : int [1:123] 247 248 249 250 251 252 253 254 255 256 ...
+  .. ..$ : int [1:123] 370 371 372 373 374 375 376 377 378 379 ...
+  .. ..$ : int [1:123] 493 494 495 496 497 498 499 500 501 502 ...
+  .. ..$ : int [1:123] 616 617 618 619 620 621 622 623 624 625 ...
+  .. ..$ : int [1:123] 739 740 741 742 743 744 745 746 747 748 ...
+  .. ..$ : int [1:123] 862 863 864 865 866 867 868 869 870 871 ...
+  .. ..- attr(*, "ptype")= int(0) 
+  .. ..- attr(*, "class")= chr [1:3] "vctrs_list_of" "vctrs_vctr" "list"
+  ..- attr(*, ".drop")= logi TRUE
+\end{Soutput}
+\end{Schunk}
+
+The dataset is stored in a panel structure that contains 123 yearly observations for 8 countries. Therefore, each variable corresponds to $n = 8$ time series, each with a sample size of $T = 123$.
+
+\begin{Schunk}
+\begin{Sinput}
+> #Variables
+> at        <- c(1, 31, 61, 91, 121)
+> dates     <- unique(house_prices$year)
+> n_ts      <- length(unique(house_prices$iso))
+> t_len     <- nrow(house_prices) / n_ts
+> countries <- unique(house_prices$iso)
+> n_ts
+\end{Sinput}
+\begin{Soutput}
+[1] 8
+\end{Soutput}
+\begin{Sinput}
+> t_len
+\end{Sinput}
+\begin{Soutput}
+[1] 123
+\end{Soutput}
+\end{Schunk}
+
+
+ The house price data $Y_{it}$ is assumed to follow a semi-parametric trend model
+ \begin{equation*}
+ Y_{it} = m_i(t/T) + \boldsymbol{\beta_i}^\top \boldsymbol{X_{it}} + \alpha_i +  \varepsilon_{it} \quad \text{ for } t = 1, \ldots, T,
+ \end{equation*}
+where $Y_{it}=$ ln $HP_{it}$ and $X_{it} =$ (ln$GDP_{it}$, ln$POP_{it}$, $I_{it}$, $INFL_{it})^\top$. The unknown parameters $\alpha$ and $\boldsymbol{\beta_i}$ need to be estimated, and $m$ is the unknown time trend of interest. To estimate $\alpha$ and $\boldsymbol{\beta_i}$, we apply the procedure described in Section 3.1 of \cite{KhismatullinaVogt2022}, which is achieved by the function \verb|parameters_hp()|. In addition, the function returns the estimated augmented time series of house prices 
+ \begin{equation*}
+ \widehat{Y}_{it} := Y_{it} - \widehat{\alpha_i} - \widehat{\boldsymbol{\beta_i}}^\top \boldsymbol{ X_{it}}.
+ \end{equation*}
+ 
+\begin{Schunk}
+\begin{Sinput}
+> library(tidyr)
+> library(dplyr)
+> parameters_hp <- function(X_mat, n_ts, t_len, countries){
++   hp_log           <- matrix(NA, ncol = n_ts, nrow = t_len)
++   colnames(hp_log) <- countries
++   
++   hp_log_augm           <- matrix(NA, ncol = n_ts, nrow = t_len)
++   colnames(hp_log_augm) <- countries
++   
++   beta      <- matrix(data = NA, nrow = 4, ncol = n_ts)
++   alpha_vec <- c()
++ 
++   i <- 1
++   
++   for (country in countries){
++     tmp <- X_mat[X_mat$iso == country, ]
++     tmp <- tmp[order(tmp$year), ]
++     
++     #Calculating first difference of the growth rate
++     tmp <-
++       tmp %>%
++       mutate(delta_log_hp = coalesce(delta_log_hp, 0)) %>%
++       mutate(delta_log_gdp = coalesce(delta_log_gdp, 0)) %>%
++       mutate(delta_ltrate = coalesce(delta_ltrate, 0)) %>%
++       mutate(delta_log_pop = coalesce(delta_log_pop, 0)) %>%
++       mutate(delta_infl = coalesce(delta_infl, 0))
++     
++     #Estimating beta_i
++     y_vec_tmp <- as.matrix(tmp[-1, 'delta_log_hp'])
++     x_mat_tmp <- as.matrix(tmp[-1, c('delta_log_gdp', 'delta_log_pop',
++                                      'delta_ltrate', 'delta_infl')])
++     
++     beta_tmp  <- solve(t(x_mat_tmp) %*% x_mat_tmp) %*% t(x_mat_tmp) %*% y_vec_tmp
++     beta[, i] <- beta_tmp
++     
++     #Estimating alpha_i
++     alpha_tmp     <- mean(tmp$log_hp - as.vector(as.matrix(tmp[, c('log_gdp',
++                                                                    'log_pop',
++                                                                    'ltrate',
++                                                                    'infl')]) %*% beta_tmp))
++     alpha_vec[i]  <- alpha_tmp
++     
++     
++     #Working with adjusted time series and storing the original one
++     y_vec_adj        <- tmp$log_hp - as.vector(as.matrix(tmp[, c('log_gdp',
++                                                                  'log_pop',
++                                                                  'ltrate',
++                                                                  'infl')]) %*% beta_tmp) - alpha_tmp
++     hp_log[, i]      <- tmp$log_hp
++     hp_log_augm[, i] <- y_vec_adj
++     i = i + 1
++   }
++   return(list("hp_log" = hp_log, "hp_log_augm" = hp_log_augm,
++               "beta" = beta, "alpha" = alpha_vec))
++ }
+\end{Sinput}
+\end{Schunk}
+
+Using the function, we can retrieve both the original and the augmented time series.
+
+\begin{Schunk}
+\begin{Sinput}
+> estimated       <- parameters_hp(house_prices, n_ts, t_len, countries)
+> hp_mat_log      <- estimated$hp_log #Original time series
+> hp_mat_log_augm <- estimated$hp_log_augm   #Augmented time series
+\end{Sinput}
+\end{Schunk}
+
+The estimated augmented time series $\widehat{Y}_{it}$ enables us to estimate the long-run variance of the error terms in the semi-parametric model. The estimation procedure is described in detail in Section 4 of \cite{KhismatullinaVogt2020}, and additional implementation details are provided in Section \ref{lrv}. We set the tuning parameters q and r to be 15 and 10, respectively. The function \verb|sigma()| returns the estimated results for the long-run variance, using a lag order based on one of five user-specified criteria.
+
+
+\begin{Schunk}
+\begin{Sinput}
+> sigma <- function(matrix_, n_ts, q_ = 15, r_ = 10, procedure = "all_one"){
++   #Order selection
++   q_vec <- 15:25
++   r_vec <- 10:15
++   order_results <- c()
++   order_results_BIC <- c()
++   
++   for (j in 1:n_ts){
++     criterion_matrix <- expand.grid(q = q_vec, r = r_vec)
++     
++     criterion_matrix$FPE  <- numeric(length = nrow(criterion_matrix))
++     criterion_matrix$AIC  <- numeric(length = nrow(criterion_matrix))
++     criterion_matrix$AICC <- numeric(length = nrow(criterion_matrix))
++     criterion_matrix$BIC  <- numeric(length = nrow(criterion_matrix))
++     criterion_matrix$HQ   <- numeric(length = nrow(criterion_matrix))
++     
++     for (i in 1:nrow(criterion_matrix)){
++       FPE <- c()
++       AIC <- c()
++       AICC <- c()
++       BIC <- c()
++       HQ <- c()
++       
++       different_orders <- (1:9)
++       
++       for (order in different_orders){
++         AR.struc      <- estimate_lrv(data = matrix_[, j], q = criterion_matrix$q[[i]],
++                                       r_bar = criterion_matrix$r[[i]], p = order)
++         sigma_eta_hat <- sqrt(AR.struc$vareta)
++         FPE <- c(FPE, (sigma_eta_hat^2 * (t_len + order)) / (t_len - order))
++         AIC <- c(AIC, t_len * log(sigma_eta_hat^2) + 2 * order)
++         AICC <- c(AICC, t_len * log(sigma_eta_hat^2) + t_len * (1 + order / t_len)/(1 - (order +2)/t_len))
++         BIC <- c(BIC, log(sigma_eta_hat^2) + order * log(t_len) / t_len)
++         HQ <- c(HQ, log(sigma_eta_hat^2) + 2 * order * log(log(t_len)) / t_len)
++       }
++       criterion_matrix$FPE[[i]]  <- which.min(FPE)
++       criterion_matrix$AIC[[i]]  <- which.min(AIC)
++       criterion_matrix$AICC[[i]] <- which.min(AICC)
++       criterion_matrix$BIC[[i]]  <- which.min(BIC)
++       criterion_matrix$HQ[[i]]   <- which.min(HQ)
++     }
++     maxim <- max(criterion_matrix[, 3:7])
++     order_results <- c(order_results, maxim)
++     order_results_BIC <- c(order_results_BIC, max(criterion_matrix$BIC))
++     cat("For the country ", colnames(matrix_)[j], " the results are as follows: ", max(criterion_matrix$FPE), " ", max(criterion_matrix$AIC), " ", max(criterion_matrix$AICC), " ", max(criterion_matrix$BIC), " ", max(criterion_matrix$HQ), " \n")
++   }
++   
++   #Calculating each sigma_hat_i separately
++   sigmahat_vector <- c()
++   ahat_vector     <- c()
++   
++   if (procedure == "all_one") {
++     for (i in 1:n_ts){
++       AR.struc        <- estimate_lrv(data = matrix_[, i], q = q_, r_bar = r_,
++                                       p = 1)
++       sigma_hat_i     <- sqrt(AR.struc$lrv)
++       sigmahat_vector <- c(sigmahat_vector, sigma_hat_i)
++       ahat_vector     <- c(ahat_vector, AR.struc$ahat)
++     }
++   } else {
++     for (i in 1:n_ts){
++       AR.struc        <- estimate_lrv(data = matrix_[, i], q = q_, r_bar = r_,
++                                       p = order_results_BIC[i])
++       sigma_hat_i     <- sqrt(AR.struc$lrv)
++       sigmahat_vector <- c(sigmahat_vector, sigma_hat_i)
++       ahat_vector     <- c(ahat_vector, AR.struc$ahat)
++     }    
++   }
++   return(sigmahat_vector)
++ }
+\end{Sinput}
+\end{Schunk}
+
+We apply the function to compute the estimated long-run variances using BIC.
+
+\begin{Schunk}
+\begin{Sinput}
+> q         <- 15 #Parameters for the estimation of sigma
+> r         <- 10
+> sigma_vec <- sigma(hp_mat_log_augm, n_ts = n_ts, q_ = q, r_ = r,
++                    procedure = "BIC")
+\end{Sinput}
+\begin{Soutput}
+For the country  AUS  the results are as follows:  1   1   1   1   1  
+For the country  BEL  the results are as follows:  1   1   1   1   1  
+For the country  DNK  the results are as follows:  1   1   1   1   1  
+For the country  FRA  the results are as follows:  1   1   1   1   1  
+For the country  NLD  the results are as follows:  1   1   1   1   1  
+For the country  NOR  the results are as follows:  1   1   1   1   1  
+For the country  SWE  the results are as follows:  1   1   1   1   1  
+For the country  USA  the results are as follows:  8   8   8   7   8  
+\end{Soutput}
+\end{Schunk}
+
+Throughout the section, we set the significance level to $\alpha=0.05$ and the number of the simulations for producing critical values to $5000$.
+
+\begin{Schunk}
+\begin{Sinput}
+> 	alpha   <- 0.05
+> sim_runs  <- 5000
+\end{Sinput}
+\end{Schunk}
+
+Furthermore, we compare all pairs of countries $(i,j)$ with $i < j$ (hence, $\mathcal{S} = \{1 \leq i < j \leq n\}$), and we choose the family of intervals $\mathcal{F}$ for calculating the test statistics as follows.
+
+\begin{Schunk}
+\begin{Sinput}
+> ijset           <- expand.grid(i = 1:n, j = 1:n)
+> ijset           <- ijset[ijset$i < ijset$j, ]
+> rownames(ijset) <- NULL
+> ijset
+\end{Sinput}
+\begin{Soutput}
+   i j
+1  1 2
+2  1 3
+3  2 3
+4  1 4
+5  2 4
+6  3 4
+7  1 5
+8  2 5
+9  3 5
+10 4 5
+\end{Soutput}
+\end{Schunk}
+
+The null hypothesis involves the grid $\mathcal{F}_T$ that needs to be specified. In this empirical analysis, we construct the grid such that each interval $I_{u,h} =[u - h, u + h]$ spans 5, 15, 25,...years. More on the construction of $\mathcal{F}_T$ you can find in \cite{KhismatullinaVogt PAPER3} and in the package documentation. 
+
+\begin{Schunk}
+\begin{Sinput}
+> u_grid <- seq(from = 0, to = 1, by =  1/t_len)
+> h_grid <- seq(from = log(t_len) / t_len, to = 1 / 4, by = 5 / t_len)
+> h_grid <- h_grid[h_grid > log(t_len) / t_len]
+> grid   <- construct_grid(t = t_len, u_grid = u_grid, h_grid = h_grid)
+\end{Sinput}
+\end{Schunk}
+
+A graphical presentation of the family $\mathcal{F}$ for our sample size $T = 123$ (as in the application) is given here:
+
+\begin{Schunk}
+\begin{Sinput}
+> intervals <- data.frame('left' = grid$gset$u - grid$gset$h,
++                         'right' = grid$gset$u + grid$gset$h,
++                         'v' = 0)
+> intervals$v <- (1:nrow(intervals)) / nrow(intervals)
+> plot(NA, xlim=c(0,t_len),  ylim = c(0, 1 + 1/nrow(intervals)),
++      xlab="days", ylab = "", yaxt= "n", mgp=c(2,0.5,0))
+> title(main = expression(The ~ family ~ of ~ intervals ~ italic(F)),
++       line = 1)
+> segments(intervals$left * t_len, intervals$v,
++          intervals$right * t_len, intervals$v,
++          lwd = 2)
+\end{Sinput}
+\end{Schunk}
+
+With the help of our multiscale method, we simultaneously test the null hypothesis $H_0^{[i, j]}(u,h)$ that $m_i(\cdot) = m_j(\cdot)$ on the interval $\mathcal{I}_{u,h}$ with $(u,h) \in \mathcal{G}_T$.
+
+Now we are ready to perform the test.
+\begin{enumerate}[label=\textit{Step \arabic*.}, leftmargin=1.45cm]
+  \item Compute the quantile $q_{T,\text{Gauss}}(\alpha)$ by Monte Carlo simulations. Specifically, draw a large number \verb|sim_runs| = 5000 samples of independent standard normal random variables $\{Z_{it}^{(\ell)} : 1 \le i \le n, \, 1 \le t \le T \}$ for $1 \le \ell \le $\verb|sim_runs|. Compute the value $\Phi_{n,T}^{(\ell)}$ of the Gaussian statistic $\Phi_{n,T}$ for each sample $\ell$ by the following formula:
+\begin{align*}
+\Phi_{n,T} = \max_{1 \le i < j \le n} \max_{(u,h) \in \mathcal{G}_T} \phi_{ij,T}^0(u,h),
+\end{align*}
+where
+\begin{align*}
+ \phi_{ij,T}^0(u,h) = \frac{1}{\sqrt{2}} \Big|   \sum\limits_{t=1}^T w_{t,T}(u,h) \big \{ (Z_{it}- \bar{Z_{i}}) - (Z_{jt} - \bar{Z_{j}})  \big\} \Big| - \lambda(h),
+\end{align*}
+with $w_{t, T}(u, h)$ representing the local linear kernel weights with the Epanechnikov kernel, and $\lambda(h) = \sqrt{2 \log \{ 1/(2h) \}}$ is an additive correction term. Then calculate the empirical $(1-\alpha)$-quantile $\hat{q}_{T,\text{Gauss}}(\alpha)$ from the values $\{ \Phi_T^{(\ell)}: 1 \le \ell \le$ \verb|sim_runs| \}. Use $\hat{q}_{T,\text{Gauss}}(\alpha)$ as an approximation of the quantile $q_{T,\text{Gauss}}(\alpha)$.
+
+This step is done with these lines of code:
+
+\begin{Schunk}
+\begin{Sinput}
+> quantiles <- compute_quantiles(t_len = t_len, grid = grid,
++                                n_ts = n_ts, ijset = ijset,
++                                sigma = sigma_vec,
++                                sim_runs = sim_runs)
