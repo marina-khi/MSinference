@@ -10,12 +10,12 @@ corrections(coefs, var_eta, len)
 \arguments{
 \item{coefs}{Given (estimated) coefficients of the AR time series.}
 
-\item{len}{Length of the vector of the corrections}
+\item{var_eta}{Variance of the innovation term}
 
-\item{var.eta}{Variance of the innovation term}
+\item{len}{Length of the vector of the corrections}
 }
 \value{
-c.vec    Vector of the corrections terms of length len.
+.         Vector of the corrections terms of length len.
 }
 \description{
 Computes vector of correction terms for second-stage estimator

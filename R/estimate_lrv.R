@@ -43,9 +43,9 @@ variance_eta <- function(data, coefs, p) {
 #'
 #' @keywords internal
 #' @param coefs     Given (estimated) coefficients of the AR time series.
-#' @param var.eta   Variance of the innovation term
+#' @param var_eta   Variance of the innovation term
 #' @param len       Length of the vector of the corrections
-#' @return c.vec    Vector of the corrections terms of length len.
+#' @return.         Vector of the corrections terms of length len.
 corrections <- function(coefs, var_eta, len) {
   p        <- length(coefs)
   c_vec    <- rep(0, len)
@@ -67,7 +67,7 @@ corrections <- function(coefs, var_eta, len) {
 #' @param correct   Vector of the corrections, either zero or calculated by
 #'                  the function \code{\link{corrections}}.
 #' @param p         AR order of the time series.
-#' @return  Vector of length p  of estimated AR coefficients.
+#' @return.         Vector of length p  of estimated AR coefficients.
 ar_coef <- function(data, l1, l2, correct, p) {
   pos <- 0
   a_mat <- matrix(0, nrow = l2 - l1 + 1, ncol = p)

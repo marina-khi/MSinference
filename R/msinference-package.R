@@ -34,7 +34,7 @@
 #'
 #' @docType package
 #' @name msinference-package
-#' @aliases MSinference
+#' @aliases msinference
 #' @references 
 #' \insertRef{KhismatullinaVogt2020}{MSinference}
 #'             

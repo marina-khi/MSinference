@@ -3,7 +3,7 @@
 \docType{package}
 \name{msinference-package}
 \alias{msinference-package}
-\alias{MSinference}
+\alias{msinference}
 \title{Multiscale Inference for Nonparametric Time Trend(s)}
 \description{
 This package performs a multiscale analysis of a single nonparametric 

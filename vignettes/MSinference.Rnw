@@ -4,8 +4,8 @@
 %\VignettePackage{MSinference}
 %\VignetteEngine{knitr::knitr}
 %\documentclass[a4paper]{amsart}
-%\documentclass[a4paper]{article}
-\documentclass[a4paper]{scrartcl}
+\documentclass[a4paper]{article}
+%\documentclass[a4paper]{scrartcl}
 \usepackage[utf8]{inputenc}
 \usepackage{natbib}
 \usepackage{url}
@@ -16,7 +16,7 @@
 \author{Marina Khismatullina \and Michael Vogt}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
 
 \maketitle
 
@@ -522,9 +522,9 @@ segments(reject_set$startpoint, reject_set$values,
 @
 
 
-% \section{Long-run variance estimator}\label{sec:lrv}
-% 
-% In development.
+\section{Long-run variance estimator}\label{sec:lrv}
+
+In development.
 
 % In this section we describe the usage of the estimation procedure of the parameteres of a time series proces. The estimation procedure relies on the following simple observation: If $\{\varepsilon_t\}$ is an AR($p$) process, then the time series $\{ \Delta_q \varepsilon_t \}$ of the differences $\Delta_q \varepsilon_t = \varepsilon_t - \varepsilon_{t-q}$ is an ARMA($p,q$) process of the form
 % \begin{equation*}
@@ -562,6 +562,6 @@ segments(reject_set$startpoint, reject_set$values,
 % \section{Conclusion}\label{sec:concl}
 % In development.
 % 
-% \bibliography{bibliography}
-% \bibliographystyle{ims}
+\bibliography{bibliography}
+\bibliographystyle{ims}
 \end{document}

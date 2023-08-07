@@ -18,7 +18,7 @@ the function \code{\link{corrections}}.}
 \item{p}{AR order of the time series.}
 }
 \value{
-Vector of length p  of estimated AR coefficients.
+.         Vector of length p  of estimated AR coefficients.
 }
 \description{
 Computes estimator of the AR(p) coefficients by the procedure from
