@@ -1,8 +1,8 @@
 Package: MSinference
 Type: Package
 Title: Multiscale Inference for Nonparametric Time Trend(s)
-Version: 0.0.9
-Date: 2023-01-18
+Version: 0.1.0
+Date: 2023-08-07
 Authors@R: c(person("Marina", "Khismatullina", email = "khismatullina@ese.eur.nl",
   role = c("aut", "cre")),
   person("Michael", "Vogt", email = "m.vogt@uni-ulm.de", role = "aut"))
