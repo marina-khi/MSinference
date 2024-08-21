@@ -74,8 +74,8 @@ compute_quantiles <- function(t_len, n_ts = 1, grid = NULL,
                            gset = gset_cpp, ijset = ijset_cpp,
                            sigma = sigma, deriv_order = deriv_order,
                            correction = correction, epidem = epidem)
-  quant  <- as.vector(quantile(phi, probs = probs))
-  quant  <- rbind(probs, quant)
+  quant <- as.vector(quantile(phi, probs = probs, na.rm = TRUE))
+  quant <- rbind(probs, quant)
 
   colnames(quant) <- NULL
   rownames(quant) <- NULL

@@ -175,12 +175,13 @@ We can now use this dataframe to produce the plots for illustrating the results.
 All these steps are not necessary for performing the test, they are already incorporated in the function \verb|multiscale_test()|:
 
 <<>>=
+set.seed(1)
 results <- multiscale_test(data = temperature,
                            sigma = sigmahat,
                            grid = grid,
                            alpha = alpha,
                            deriv_order = deriv_order,
-                           sim_runs = 10)
+                           sim_runs = 100)
 results$testing_result
 @
 
@@ -247,29 +248,27 @@ Finally, we present the results produced by our test. Specifically, we depict in
 
 According to theoretical results in \cite{KhismatullinaVogt2020}, we can make the following simultaneous confidence statement about the intervals plotted below: we can claim, with confidence of about $95\%$, that the trend function $m$ increases on each of these intervals. In particular, we can claim with this confidence that there has been some upward movement in the trend both in the period from around $1680$ to $1740$ and in the period from about $1870$ onwards. Hence, our test in particular provides evidence that there has been some warming trend in the period over approximately the last $150$ years. On the other hand, as the set $\Pi_T^-$ is empty, there is no evidence of any downward movement of the trend.
 
-<<>>=
-gset   <- results$gset_with_vals
-reject <- subset(gset, (test == 1 & u - h >= 0 & u + h <= 1),
-                 select = c(u, h))
-p_plus <- data.frame('startpoint' = (reject$u - reject$h) *
-                       t_len + ts_start,
-                     'endpoint' = (reject$u + reject$h) * t_len +
-                       ts_start, 'values' = 0)
-p_plus$values <- (1:nrow(p_plus)) / nrow(p_plus)
-p_plus_min    <- compute_minimal_intervals(p_plus)
-
-plot(NA, xlim=c(ts_start, ts_start + t_len - 1),
-     ylim = c(0, 1 + 1 / nrow(p_plus)),
-     xlab=" ", mgp=c(2, 0.5, 0), yaxt = "n", ylab = "")
-title(main = "(c) (minimal) intervals produced by the test",
-      font.main = 1, line = 0.5)
-title(xlab = "year", line = 1.7, cex.lab = 0.9)
-segments(p_plus_min$startpoint, p_plus_min$values,
-         p_plus_min$endpoint, p_plus_min$values, lwd = 2)
-segments(p_plus$startpoint, p_plus$values,
-         p_plus$endpoint, p_plus$values,
-         col = "gray")
-@
+% gset   <- results$gset_with_vals
+% reject <- subset(gset, (test == 1 & u - h >= 0 & u + h <= 1),
+%                  select = c(u, h))
+% p_plus <- data.frame('startpoint' = (reject$u - reject$h) *
+%                        t_len + ts_start,
+%                      'endpoint' = (reject$u + reject$h) * t_len +
+%                        ts_start, 'values' = 0)
+% p_plus$values <- (1:nrow(p_plus)) / nrow(p_plus)
+% p_plus_min    <- compute_minimal_intervals(p_plus)
+% 
+% plot(NA, xlim=c(ts_start, ts_start + t_len - 1),
+%      ylim = c(0, 1 + 1 / nrow(p_plus)),
+%      xlab=" ", mgp=c(2, 0.5, 0), yaxt = "n", ylab = "")
+% title(main = "(c) (minimal) intervals produced by the test",
+%       font.main = 1, line = 0.5)
+% title(xlab = "year", line = 1.7, cex.lab = 0.9)
+% segments(p_plus_min$startpoint, p_plus_min$values,
+%          p_plus_min$endpoint, p_plus_min$values, lwd = 2)
+% segments(p_plus$startpoint, p_plus$values,
+%          p_plus$endpoint, p_plus$values,
+%          col = "gray")
 
 \section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
 

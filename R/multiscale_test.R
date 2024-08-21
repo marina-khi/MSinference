@@ -73,7 +73,7 @@
 #' In case of n_ts > 1, the function returns a list
 #' with the following elements:
 #'    \item{quant}{Quantile that was used for testing calculated from
-#'                the gaussian distribution.stat}{Value of the multiscale statistics.}
+#'                the gaussian distribution.}
 #'    \item{statistics}{Value of the multiscale statistics.}
 #'    \item{stat_pairwise}{Matrix of the values of the pairwise statistics.}
 #'    \item{ijset}{The matrix that  consists of all pairs of indices
@@ -159,7 +159,7 @@ multiscale_test <- function(data, sigma = 1, sigma_vec = 1, n_ts = 1, grid = NUL
 
     gset_with_vals$test <- test_results
 
-    return(list(quant = quant, stat = psi$stat, test_matrix = test,
+    return(list(testing_result = testing_result, quant = quant, stat = psi$stat, test_matrix = test,
                 gset_with_vals = gset_with_vals))
 
   } else {

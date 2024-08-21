@@ -101,7 +101,7 @@ with the following elements:
 In case of n_ts > 1, the function returns a list
 with the following elements:
    \item{quant}{Quantile that was used for testing calculated from
-               the gaussian distribution.stat}{Value of the multiscale statistics.}
+               the gaussian distribution.}
    \item{statistics}{Value of the multiscale statistics.}
    \item{stat_pairwise}{Matrix of the values of the pairwise statistics.}
    \item{ijset}{The matrix that  consists of all pairs of indices
