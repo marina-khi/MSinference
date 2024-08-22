@@ -32,8 +32,8 @@
 #'                     Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.
 #' @param correction   Logical variable, TRUE (by default) if we are using
 #'                     \eqn{a_k} and \eqn{b_k}.
-#' @param epidem       Logical variable, TRUE if we are using
-#'                     dealing with epidemic time trends. Default is FALSE.
+#' @param epidem       Logical variable, TRUE if we are dealing with
+#'                     epidemic time trends. Default is FALSE.
 #'
 #' @return             Matrix with 2 rows where the first row contains
 #'                     the vector of probabilities (probs) and the second

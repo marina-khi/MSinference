@@ -56,8 +56,8 @@ Default is \eqn{(0.5, 0.505, 0.51, \ldots, 0.995)}.}
 \item{correction}{Logical variable, TRUE (by default) if we are using
 \eqn{a_k} and \eqn{b_k}.}
 
-\item{epidem}{Logical variable, TRUE if we are using
-dealing with epidemic time trends. Default is FALSE.}
+\item{epidem}{Logical variable, TRUE if we are dealing with
+epidemic time trends. Default is FALSE.}
 }
 \value{
 Matrix with 2 rows where the first row contains

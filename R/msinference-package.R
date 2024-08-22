@@ -26,8 +26,8 @@
 #'   \eqn{\{\mathcal{X}_i = \{ X_{it}: 1 \le 1 \le T \}\}}, where \eqn{X_{it}}
 #'   are quasi-Poisson distributed with time-varying intensity parameter
 #'   \eqn{\lambda_i(t/T)}. The multiscale method allows to test whether
-#'   intenisty parameters are different or not, and if they are, it detects
-#'   with a prespicified significance level the regions where these differences
+#'   intensity parameters are different or not, and if they are, it detects
+#'   with a pre-specified significance level the regions where these differences
 #'   most probably occur. The method was introduced in
 #'   Khismatullina and Vogt (2023) and can be used for comparing the rates of
 #'   infection of COVID-19 across countries.
@@ -36,6 +36,8 @@
 #' @aliases MSinference
 #' @references 
 #' \insertRef{KhismatullinaVogt2020}{MSinference}
+#'
+#' \insertRef{KhismatullinaVogt2022}{MSinference}            
 #'             
 #' \insertRef{KhismatullinaVogt2023}{MSinference}            
 NULL

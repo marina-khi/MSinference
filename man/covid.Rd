@@ -6,7 +6,7 @@
 \title{Number of daily new cases of infections of COVID-19 per country.}
 \format{
 A matrix with 99 rows and 41 columns. Each column corresponds to
-one coutnry, with the name of the country (denoted by three letter) being
+one country, with the name of the country (denoted by three letter) being
 the name of the column.
 }
 \source{
