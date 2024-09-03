@@ -9,7 +9,7 @@
 Author: Marina Khismatullina
 
 ## Description
-The package performs a multiscale analysis of a nonparametric regression or nonparametric regressions with time series errors. In case of one regression, with the help of this package it is possible to detect the regions where the trend function is increasing or decreasing. In case of multiple regressions, the test identifies regions where the trend functions are different from each other. See Khismatullina and Vogt (2020) <doi:10.1111/rssb.12347>, Khismatullina and Vogt (2022) <doi:10.48550/arXiv.2209.10841> and Khismatullina and Vogt (2023) <doi:10.1016/j.jeconom.2021.04.010> for more details on theory and applications.
+The package performs a multiscale analysis of a nonparametric regression or nonparametric regressions with time series errors. In case of one regression, with the help of this package it is possible to detect the regions where the trend function is increasing or decreasing. In case of multiple regressions, the test identifies regions where the trend functions are different from each other. See Khismatullina and Vogt (2020) (doi:10.1111/rssb.12347), Khismatullina and Vogt (2022) (doi:10.48550/arXiv.2209.10841) and Khismatullina and Vogt (2023) (doi:10.1016/j.jeconom.2021.04.010) for more details on theory and applications.
 
 ## Dependencies
 
