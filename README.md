@@ -15,7 +15,7 @@ The package performs a multiscale analysis of a nonparametric regression or nonp
 
 To optimize computational performance, most methods implemented in the package are written in C++. However, for user convenience, the interface of the package is entirely implemented in R, with minimal dependencies, including:
 
-- `Rcpp': facilitates seamless integration between R and C++.
+- `Rcpp`: facilitates seamless integration between R and C++.
 - `foreach`, `parallel`, `doParallel`: are necessary for fast parallel computation of the critical values.
 
 ## Issues, bug reports, contributions, further help
@@ -24,5 +24,3 @@ You can raise issues, report bugs, seek for further help, or submit your contrib
 github repository [marina-khi/MSinference](https://github.com/marina-khi/MSinference). 
 
 For bug reports, you are kindly asked to make a small and self-contained program which exposes the bug.
-
-## References
