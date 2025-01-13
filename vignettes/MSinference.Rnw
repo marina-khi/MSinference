@@ -270,7 +270,7 @@ According to theoretical results in \cite{KhismatullinaVogt2020}, we can make th
 %          p_plus$endpoint, p_plus$values,
 %          col = "gray")
 
-\section{Multiscale Inference for Multiple Nonparametric Regressions}\label{sec:multiple}
+\section{Nonparametric Comparison of Epidemic Time Trends}\label{sec:epidemic}
 
 As an illustration for the multiscale method proposed in \cite{KhismatullinaVogt2023}, we analyse the dataset on the daily new cases of infections of COVID-19. The data are freely available on the homepage of the European Center for Disease Prevention and Control (\texttt{https://www.ecdc.europa.eu}) and were downloaded on 20 July 2020. You can load the data using the function data(covid, package = "MSinference").
 
@@ -556,7 +556,51 @@ In development.
 % \end{equation}
 % where $\widehat{\nu}^2 = (2T)^{-1} \sum_{t=p+2}^T \widehat{r}_{t,T}^2$ with $\widehat{r}_{t,T} = \Delta_1 Y_{t,T} - \sum_{j=1}^p \widehat{a}_j \Delta_1 Y_{t-j,T}$ is an estimator of the innovation variance $\nu^2$ and we make use of the fact that $\sigma^2 = \nu^2 / (1 - \sum_{j=1}^{p^*} a_j)^2$ for the AR($p^*$) process $\{\varepsilon_t\}$. 
 % 
+\section{Multiscale Inference for Multiple Nonparametric Regressions with Time Series Errors}\label{sec:muliple}
+
+As an illustration for the multiscale testing procedure proposed in \cite{KhismatullinaVogt2025}, we analyse a historical dataset on nominal annual house prices from \cite{Knoll2017} that contains data for $14$ advanced economies covering $143$ years from $1870$ to $2012$. 
+
+
+
+The data are distributed through openICPSR, a public access repository supported by the Inter-university Consortium for Political and Social Research (ICPSR), under an Other License. The dataset is freely available and was downloaded on 13 January 2022 from \texttt{https://www.openicpsr.org/openicpsr/project/113055/version/V1/view}.
+
+You can load the data using the function \verb|data(house_prices, package = "MSinference")|.
+
+<<>>=
+require(MSinference)
+data(house_prices, package = "MSinference")
+str(house_prices)
+@
+
+In our analysis, we consider 8 countries (Australia, Belgium, Denmark, France, Netherlands, Norway, Sweden and USA) over the time period 1890--2012. The data for all these countries except Belgium contain no missing values. The data for Belgium have five missing values (that span five years during the World War I) which we impute by linear interpolation. The time series of the other $6$ countries have more than $10$ missings each, which is why we exclude them from the analysis.
+
+<<>>==
+house_prices <- subset(house_prices, iso %in% c('AUS', 'BEL', 'DNK', 'FRA', 'NLD', 'NOR', 'SWE', 'USA'))
+@
+
+% We deflate the nominal house prices with the corresponding consumer price index (CPI) to obtain real house prices ($HP$).
+% Data for CPI, real GDP, population size and long-term interest rate are taken from the Jordà-Schularick-Taylor Macrohistory Database (see \cite{Jorda2017} for a detailed description of the variable construction), which is freely available at \url{http://www.macrohistory.net/data/} (accessed on 13 January 2022).
 % 
+% 
+% In summary, we observe a panel of $n = 8$ time series $\mathcal{T}_i = \{(Y_{it}, \X_{it}): 1 \le t \le T \}$ of length $T = 123$ for each country $i \in \{1,\ldots, 8\}$, where $Y_{it} = \ln HP_{it}$ and $\X_{it} = (\ln GDP_{it}, \ln POP_{it}, I_{it}, INFL_{it})^\top$. For each $i$, the time series $\mathcal{T}_i$ is assumed to follow the model $Y_{it} = m_i(t/T) + \bfbeta^\top_i \X_{it} + \alpha_i + \varepsilon_{it}$, or equivalently, 
+% \begin{equation}\label{eq:model:app4}
+% \ln HP_{it} =  m_i \Big( \frac{t}{T} \Big) + \beta_{i, 1} \ln GDP_{it} + \beta_{i, 2} \ln POP_{it} + \beta_{i, 3} I_{it} + \beta_{i, 4} INFL_{it} + \alpha_i + \varepsilon_{it}
+% \end{equation}
+% for $1 \le t \le T$, where $\bfbeta_i = (\beta_{i, 1}, \beta_{i, 2}, \beta_{i, 3}, \beta_{i, 4})^\top$ is a vector of unknown parameters, $m_i$ is a country-specific unknown nonparametric time trend and $\alpha_i$ is a fixed effect. 
+% 
+% 
+% The inclusion of a nonparametric trend function $m_i$ in model \eqref{eq:model:app4} is supported by the literature. \cite{Ugarte2009}, for example, model the trend in average Spanish house prices by means of splines. \cite{Winter2022} include a long-term stochastic trend component when describing the dynamic behaviour of real house prices in $8$ advanced economies. Including a nonparametric trend function when modelling the evolution of house prices is also the main conclusion in \cite{Zhang2016}, where it is shown that the time series of logarithmic US house prices is trend-stationary, i.e., can be transformed into a stationary series by subtracting a deterministic trend.
+% 
+% 
+% We implement our multiscale test as follows: 
+% (i) We choose $K$ to be the Epanechnikov kernel and consider the location-scale grid $\mathcal{G}_T = U_T \times H_T$, where $U_T = \{ u \in [0,1]: u = \textstyle{\frac{t}{T}} \text{ with } 1 \le t \le T \}$ and $H_T = \{ h \in [ \textstyle{\frac{\log T}{T}}, \textstyle{\frac{1}{4}} ]:  h = \textstyle{\frac{5t - 3}{T}} \text{ with } 1 \le t \le T \}$. We thus take into account
+% %all locations $u$ on an equidistant grid $U_T$ with step length $1/T$ and
+% all scales $h=2/T, 7/T, 12/T,\ldots$ with $\log T /T \le h \le 1/4$, where the lower bound $\log T / T$ is motivated by Assumption \ref{C-h}. This implies that each interval $\interval =[u-h,u+h]$ with $(u,h) \in \grid$ spans $5, 15, 25, \ldots$ years.   
+% (ii) We assume that for each $i$, the error process $\mathcal{E}_i = \{\varepsilon_{it}: 1 \leq t \leq T\}$ follows an AR($p_i$) model and we estimate the long-run variances $\sigma_i^2$ by the difference-based estimator from \cite{KhismatullinaVogt2020} with tuning parameters $q=15$ and $r=10$. We choose $p_i$ by minimizing BIC. For $7$ out of $8$ countries, the order $p_i$ determined by BIC\footnote{Applying other information criteria such as FPE, AIC and HQ yields exactly the same results in these cases.} is equal to $1$. For the sake of simplicity, we thus assume that $p_i = 1$ for all $i$.
+% (iii) The critical values $q_{n, T}(\alpha)$ are computed by Monte Carlo methods as described in Section \ref{subsec:test:impl}, where we set $L=5000$.
+% Besides these choices, we implement the test exactly as described in Section \ref{sec:test}.  
+
+
 % 
 % \section{Conclusion}\label{sec:concl}
 % In development.
