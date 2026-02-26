@@ -4,3 +4,11 @@ Meta
 .Rproj.user
 /doc/
 /Meta/
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+docs/
+*.o
+*.so
+*.dll

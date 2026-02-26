@@ -1,0 +1,11 @@
+linters: linters_with_defaults(
+    line_length_linter(120),
+    object_name_linter = NULL,  # Allow various naming styles
+    cyclocomp_linter(25),       # Slightly relaxed complexity limit
+    commented_code_linter = NULL # Allow commented code in research package
+  )
+exclusions: list(
+    "R/RcppExports.R",
+    "tests/testthat.R"
+  )
+encoding: "UTF-8"

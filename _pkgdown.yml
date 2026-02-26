@@ -1,0 +1,57 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0051ba"
+  
+reference:
+  - title: "Main Functions"
+    desc: "Core multiscale testing functions"
+    contents:
+      - multiscale_test
+      - compute_statistics
+      
+  - title: "Grid Construction"
+    desc: "Functions for creating location-bandwidth grids"
+    contents:
+      - construct_grid
+      - construct_weekly_grid
+      
+  - title: "Quantile and Interval Functions"
+    desc: "Functions for computing quantiles and minimal intervals"
+    contents:
+      - compute_quantiles
+      - compute_quantiles_2
+      - compute_minimal_intervals
+      
+  - title: "Variance Estimation"
+    desc: "Long-run variance estimation functions"
+    contents:
+      - estimate_lrv
+      - emp_acf
+      - ar_coef
+      - variance_eta
+      - corrections
+      
+  - title: "Visualization"
+    desc: "Plotting functions"
+    contents:
+      - plot_sizer_map
+      
+  - title: "Model Selection"
+    desc: "Functions for selecting model order"
+    contents:
+      - select_order
+      
+  - title: "Datasets"
+    desc: "Example datasets included in the package"
+    contents:
+      - covid
+      - house_prices
+      - temperature
+
+articles:
+  - title: "Package Overview"
+    navbar: ~
+    contents:
+      - MSinference

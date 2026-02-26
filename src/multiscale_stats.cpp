@@ -420,9 +420,9 @@ Rcpp::List compute_multiple_statistics(int t_len, int n_ts, Rcpp::NumericMatrix 
                result_temp += data(t-1, i) - data(t-1, j);
                weight_norm += data(t-1, i) + data(t-1, j);
             }
-            vals[k] = awert(result_temp) / (sqrt(weight_norm) * sigma);
-            vals_cor[k] = correct_a[k] * (awert(result_temp) / (sqrt(weight_norm) * sigma) - correct_b[k]);
          }
+         vals[k] = awert(result_temp) / (sqrt(weight_norm) * sigma);
+         vals_cor[k] = correct_a[k] * (awert(result_temp) / (sqrt(weight_norm) * sigma) - correct_b[k]);
       }
       stat(i, j) = max(vals_cor);
       vals_mat(_, l) = vals;
